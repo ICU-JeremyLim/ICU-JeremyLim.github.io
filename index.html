@@ -7,7 +7,7 @@
     <!-- Load jsPsych -->
     <script src="jspsych/jspsych.js"></script>
     <script src="jspsych/jspsych-instructions.js"></script>
-    <script src="jspsych/jspsych-audio-button-response.js"></script>
+    <script src="jspsych/jspsych-html-button-response.js"></script>
     <link href="css/jspsych.css" rel="stylesheet" type="text/css">
     
     <style>
@@ -35,6 +35,40 @@
             line-height: 1.6;
             font-size: 16px;
         }
+        
+        /* 音频播放按钮样式 */
+        .audio-player {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .play-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .play-button:hover {
+            background-color: #45a049;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            transform: scale(1.05);
+        }
+        .play-button:active {
+            transform: scale(0.95);
+        }
+        .play-icon {
+            font-size: 32px;
+        }
     </style>
 </head>
 
@@ -43,6 +77,144 @@
 </body>
 
 <script>
+
+/******************************************************************************
+ * 多语言文本
+ ******************************************************************************/
+
+const translations = {
+    en: {
+        welcome_title: "Welcome to the Perception Test",
+        welcome_text: `
+            <p>Thank you for participating in this experiment!</p>
+            <p>This test will take approximately <strong>2 minutes</strong> to complete.</p>
+            <p>Please ensure you are in a quiet environment and wearing headphones.</p>
+            <p>Click "Next" to continue.</p>
+        `,
+        instructions_tone_title: "Question 1: Tone Judgment",
+        instructions_tone_text: `
+            <p>You will hear an audio clip.</p>
+            <p>Please listen carefully and judge whether it is a <strong>Low</strong> or <strong>High</strong> tone.</p>
+            <p><strong>Click the green button to play the audio.</strong> You can play it multiple times.</p>
+            <p>Click "Start" to begin.</p>
+        `,
+        instructions_kpth_title: "Question 2: Coda Judgment",
+        instructions_kpth_text: `
+            <p>You will hear another audio clip.</p>
+            <p>Please listen carefully and select the coda you hear from the following options:</p>
+            <ul>
+                <li><strong>ak</strong></li>
+                <li><strong>ap</strong></li>
+                <li><strong>at</strong></li>
+                <li><strong>ah</strong></li>
+            </ul>
+            <p><strong>Click the green button to play the audio.</strong> You can play it multiple times.</p>
+            <p>Click "Start" to begin.</p>
+        `,
+        debrief_title: "Test Complete!",
+        debrief_text: `
+            <p>Thank you for your participation!</p>
+            <p>Click "Download Data" to save your test results.</p>
+        `,
+        play_audio: "Click to play audio",
+        prompt_tone: "Please select the tone you heard:",
+        prompt_kpth: "Please select the coda you heard:",
+        button_next: "Next",
+        button_start: "Start",
+        button_download: "Download Data",
+        completion_message: "Data saved! You may close this page."
+    },
+    ja: {
+        welcome_title: "知覚テストへようこそ",
+        welcome_text: `
+            <p>本実験にご参加いただきありがとうございます！</p>
+            <p>このテストは約<strong>2分</strong>で完了します。</p>
+            <p>静かな環境でヘッドフォンを装着してください。</p>
+            <p>「次へ」をクリックして続けてください。</p>
+        `,
+        instructions_tone_title: "問題1：声調判断",
+        instructions_tone_text: `
+            <p>音声クリップを聴きます。</p>
+            <p>注意深く聴いて、<strong>Low</strong>または<strong>High</strong>の声調かを判断してください。</p>
+            <p><strong>緑色のボタンをクリックして音声を再生します。</strong>何度でも再生できます。</p>
+            <p>「開始」をクリックして始めてください。</p>
+        `,
+        instructions_kpth_title: "問題2：韻尾判断",
+        instructions_kpth_text: `
+            <p>別の音声クリップを聴きます。</p>
+            <p>注意深く聴いて、聞こえた韻尾を以下の選択肢から選んでください：</p>
+            <ul>
+                <li><strong>ak</strong></li>
+                <li><strong>ap</strong></li>
+                <li><strong>at</strong></li>
+                <li><strong>ah</strong></li>
+            </ul>
+            <p><strong>緑色のボタンをクリックして音声を再生します。</strong>何度でも再生できます。</p>
+            <p>「開始」をクリックして始めてください。</p>
+        `,
+        debrief_title: "テスト完了！",
+        debrief_text: `
+            <p>ご参加ありがとうございました！</p>
+            <p>「データダウンロード」をクリックしてテスト結果を保存してください。</p>
+        `,
+        play_audio: "クリックして音声を再生",
+        prompt_tone: "聞こえた声調を選択してください：",
+        prompt_kpth: "聞こえた韻尾を選択してください：",
+        button_next: "次へ",
+        button_start: "開始",
+        button_download: "データダウンロード",
+        completion_message: "データが保存されました！このページを閉じてください。"
+    },
+    zh: {
+        welcome_title: "歡迎參加感知測試",
+        welcome_text: `
+            <p>感謝您參與本實驗！</p>
+            <p>本測試約需<strong>2分鐘</strong>完成。</p>
+            <p>請確保您在安靜的環境中，並佩戴耳機。</p>
+            <p>點擊「下一頁」繼續。</p>
+        `,
+        instructions_tone_title: "第一題：聲調判斷",
+        instructions_tone_text: `
+            <p>您將聽到一段音訊。</p>
+            <p>請仔細聆聽，然後判斷這是<strong>Low</strong>還是<strong>High</strong>聲調。</p>
+            <p><strong>點擊綠色按鈕播放音訊。</strong>您可以播放多次。</p>
+            <p>點擊「開始」繼續。</p>
+        `,
+        instructions_kpth_title: "第二題：韻尾判斷",
+        instructions_kpth_text: `
+            <p>您將聽到另一段音訊。</p>
+            <p>請仔細聆聽，然後從以下選項中選擇您聽到的韻尾：</p>
+            <ul>
+                <li><strong>ak</strong></li>
+                <li><strong>ap</strong></li>
+                <li><strong>at</strong></li>
+                <li><strong>ah</strong></li>
+            </ul>
+            <p><strong>點擊綠色按鈕播放音訊。</strong>您可以播放多次。</p>
+            <p>點擊「開始」繼續。</p>
+        `,
+        debrief_title: "測試完成！",
+        debrief_text: `
+            <p>感謝您的參與！</p>
+            <p>點擊「下載資料」按鈕儲存您的測試結果。</p>
+        `,
+        play_audio: "點擊播放音訊",
+        prompt_tone: "請選擇您聽到的聲調：",
+        prompt_kpth: "請選擇您聽到的韻尾：",
+        button_next: "下一頁",
+        button_start: "開始",
+        button_download: "下載資料",
+        completion_message: "資料已儲存！您可以關閉此頁面。"
+    }
+};
+
+// 默认语言
+let currentLang = 'en';
+
+// 获取翻译文本
+function t(key) {
+    return translations[currentLang][key] || translations['en'][key];
+}
 
 /******************************************************************************
  * 工具函数
@@ -62,7 +234,7 @@ function getTimestamp() {
 
 // 下载CSV数据
 function downloadCSV(csv, filename) {
-    const blob = new Blob([csv], { type: 'text/csv' });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -73,55 +245,100 @@ function downloadCSV(csv, filename) {
     window.URL.revokeObjectURL(url);
 }
 
+// 创建音频播放HTML
+function createAudioPlayer(audioFile) {
+    return `
+        <div class="audio-player">
+            <button class="play-button" onclick="playAudio('${audioFile}')">
+                <span class="play-icon">▶</span>
+            </button>
+            <p>${t('play_audio')}</p>
+            <audio id="audio-${audioFile.replace(/[^a-zA-Z0-9]/g, '')}" preload="auto">
+                <source src="${audioFile}" type="audio/wav">
+            </audio>
+        </div>
+    `;
+}
+
+// 播放音频函数
+function playAudio(audioFile) {
+    const audioId = 'audio-' + audioFile.replace(/[^a-zA-Z0-9]/g, '');
+    const audio = document.getElementById(audioId);
+    if (audio) {
+        audio.currentTime = 0; // 重置到开始
+        audio.play();
+    }
+}
+
 /******************************************************************************
  * 实验流程
  ******************************************************************************/
 
 var timeline = [];
 
+// 语言选择页面
+var language_selection = {
+    type: 'html-button-response',
+    stimulus: `
+        <h1>Language Selection / 言語選択 / 語言選擇</h1>
+        <p>Please select your preferred language:</p>
+        <p>言語を選択してください：</p>
+        <p>請選擇您的語言：</p>
+    `,
+    choices: ['English', '日本語', '繁體中文'],
+    on_finish: function(data) {
+        if (data.button_pressed === 0) currentLang = 'en';
+        else if (data.button_pressed === 1) currentLang = 'ja';
+        else if (data.button_pressed === 2) currentLang = 'zh';
+    }
+};
+timeline.push(language_selection);
+
 // 1. 欢迎页面
 var welcome = {
     type: 'instructions',
-    pages: [
-        `<h1>欢迎参加感知测试</h1>
+    pages: function() {
+        return [`<h1>${t('welcome_title')}</h1>
         <div class="instruction-text">
-            <p>感谢您参与本实验！</p>
-            <p>本测试约需要 <strong>2分钟</strong> 完成。</p>
-            <p>请确保您在一个安静的环境中，并佩戴耳机。</p>
-            <p>点击"下一页"继续。</p>
-        </div>`
-    ],
+            ${t('welcome_text')}
+        </div>`];
+    },
     show_clickable_nav: true,
-    button_label_next: '下一页'
+    button_label_next: function() { return t('button_next'); }
 };
 timeline.push(welcome);
 
 // 2. 第一题说明
 var instructions_tone = {
     type: 'instructions',
-    pages: [
-        `<h1>第一题：声调判断</h1>
+    pages: function() {
+        return [`<h1>${t('instructions_tone_title')}</h1>
         <div class="instruction-text">
-            <p>您将听到一个音频。</p>
-            <p>请仔细聆听，然后判断这是 <strong>Low</strong> 还是 <strong>High</strong> 声调。</p>
-            <p>点击"开始"继续。</p>
-        </div>`
-    ],
+            ${t('instructions_tone_text')}
+        </div>`];
+    },
     show_clickable_nav: true,
-    button_label_next: '开始'
+    button_label_next: function() { return t('button_start'); }
 };
 timeline.push(instructions_tone);
 
-// 3. 第一题：声调判断 (Low/High)
+// 3. 第一题：声调判断 (Low/High) - 手动播放
 var trial_1 = {
-    type: 'audio-button-response',
-    stimulus: 'sounds/V02-UTC001-P-NAN001.wav',
+    type: 'html-button-response',
+    stimulus: function() {
+        return `
+            ${createAudioPlayer('sounds/V02-UTC001-P-NAN001.wav')}
+            <p><strong>${t('prompt_tone')}</strong></p>
+        `;
+    },
     choices: ['Low', 'High'],
-    prompt: '<p><strong>请选择您听到的声调：</strong></p>',
     data: {
-        task: 'tone_judgment',
         trial_number: 1,
         stimulus: 'V02-UTC001-P-NAN001.wav'
+    },
+    on_finish: function(data) {
+        // 只保留需要的数据
+        data.response = data.button_pressed === 0 ? 'Low' : 'High';
     }
 };
 timeline.push(trial_1);
@@ -129,35 +346,35 @@ timeline.push(trial_1);
 // 4. 第二题说明
 var instructions_kpth = {
     type: 'instructions',
-    pages: [
-        `<h1>第二题：韵尾判断</h1>
+    pages: function() {
+        return [`<h1>${t('instructions_kpth_title')}</h1>
         <div class="instruction-text">
-            <p>您将听到另一个音频。</p>
-            <p>请仔细聆听，然后从以下四个选项中选择您听到的韵尾：</p>
-            <ul>
-                <li><strong>ak</strong></li>
-                <li><strong>ap</strong></li>
-                <li><strong>at</strong></li>
-                <li><strong>ah</strong></li>
-            </ul>
-            <p>点击"开始"继续。</p>
-        </div>`
-    ],
+            ${t('instructions_kpth_text')}
+        </div>`];
+    },
     show_clickable_nav: true,
-    button_label_next: '开始'
+    button_label_next: function() { return t('button_start'); }
 };
 timeline.push(instructions_kpth);
 
-// 5. 第二题：kpth判断 (ak/ap/at/ah)
+// 5. 第二题：kpth判断 (ak/ap/at/ah) - 手动播放
 var trial_2 = {
-    type: 'audio-button-response',
-    stimulus: 'sounds/V02-UTC001-P-NAN002.wav',
+    type: 'html-button-response',
+    stimulus: function() {
+        return `
+            ${createAudioPlayer('sounds/V02-UTC001-P-NAN002.wav')}
+            <p><strong>${t('prompt_kpth')}</strong></p>
+        `;
+    },
     choices: ['ak', 'ap', 'at', 'ah'],
-    prompt: '<p><strong>请选择您听到的韵尾：</strong></p>',
     data: {
-        task: 'kpth_judgment',
         trial_number: 2,
         stimulus: 'V02-UTC001-P-NAN002.wav'
+    },
+    on_finish: function(data) {
+        // 只保留需要的数据
+        const options = ['ak', 'ap', 'at', 'ah'];
+        data.response = options[data.button_pressed];
     }
 };
 timeline.push(trial_2);
@@ -165,15 +382,14 @@ timeline.push(trial_2);
 // 6. 结束页面
 var debrief = {
     type: 'instructions',
-    pages: [
-        `<h1>测试完成！</h1>
+    pages: function() {
+        return [`<h1>${t('debrief_title')}</h1>
         <div class="instruction-text">
-            <p>感谢您的参与！</p>
-            <p>点击"下载数据"按钮保存您的测试结果。</p>
-        </div>`
-    ],
+            ${t('debrief_text')}
+        </div>`];
+    },
     show_clickable_nav: true,
-    button_label_next: '下载数据'
+    button_label_next: function() { return t('button_download'); }
 };
 timeline.push(debrief);
 
@@ -186,17 +402,36 @@ jsPsych.init({
     show_progress_bar: true,
     on_finish: function() {
         // 获取所有数据
-        var data = jsPsych.data.get().csv();
+        var allData = jsPsych.data.get();
+        
+        // 只保留测试试次的数据（试次1和2）
+        var filteredData = allData.filter({trial_number: 1});
+        var filteredData2 = allData.filter({trial_number: 2});
+        
+        // 创建简化的CSV
+        var csvContent = "Trial,Response,RT(ms)\n";
+        
+        // 添加试次1的数据
+        if (filteredData.count() > 0) {
+            var trial1 = filteredData.values()[0];
+            csvContent += `1,${trial1.response},${trial1.rt}\n`;
+        }
+        
+        // 添加试次2的数据
+        if (filteredData2.count() > 0) {
+            var trial2 = filteredData2.values()[0];
+            csvContent += `2,${trial2.response},${trial2.rt}\n`;
+        }
         
         // 生成文件名
         var filename = 'kpth_perception_' + getTimestamp() + '.csv';
         
         // 下载CSV
-        downloadCSV(data, filename);
+        downloadCSV(csvContent, filename);
         
         // 显示完成消息
         document.querySelector('#jspsych-content').innerHTML = 
-            '<h1>数据已保存！</h1><p>您可以关闭此页面。</p>';
+            `<h1>${t('completion_message')}</h1>`;
     }
 });
 
