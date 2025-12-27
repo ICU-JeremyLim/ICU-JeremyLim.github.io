@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Kpth Tone Perception Test</title>
+    
+    <!-- Load jsPsych -->
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/jspsych-instructions.js"></script>
+    <script src="jspsych/jspsych-audio-button-response.js"></script>
+    <link href="css/jspsych.css" rel="stylesheet" type="text/css">
+    
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .jspsych-btn {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+        }
+        .jspsych-content-wrapper {
+            width: 80%;
+            max-width: 800px;
+        }
+        .jspsych-content {
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .instruction-text {
+            text-align: left;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="jspsych-target"></div>
+</body>
+
+<script>
+
+/******************************************************************************
+ * 工具函数
+ ******************************************************************************/
+
+// 生成时间戳
+function getTimestamp() {
+    const dt = new Date();
+    const year = dt.getFullYear();
+    const month = String(dt.getMonth() + 1).padStart(2, '0');
+    const day = String(dt.getDate()).padStart(2, '0');
+    const hour = String(dt.getHours()).padStart(2, '0');
+    const minute = String(dt.getMinutes()).padStart(2, '0');
+    const second = String(dt.getSeconds()).padStart(2, '0');
+    return `${year}${month}${day}_${hour}${minute}${second}`;
+}
+
+// 下载CSV数据
+function downloadCSV(csv, filename) {
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+}
+
+/******************************************************************************
+ * 实验流程
+ ******************************************************************************/
+
+var timeline = [];
+
+// 1. 欢迎页面
+var welcome = {
+    type: 'instructions',
+    pages: [
+        `<h1>欢迎参加感知测试</h1>
+        <div class="instruction-text">
+            <p>感谢您参与本实验！</p>
+            <p>本测试约需要 <strong>2分钟</strong> 完成。</p>
+            <p>请确保您在一个安静的环境中，并佩戴耳机。</p>
+            <p>点击"下一页"继续。</p>
+        </div>`
+    ],
+    show_clickable_nav: true,
+    button_label_next: '下一页'
+};
+timeline.push(welcome);
+
+// 2. 第一题说明
+var instructions_tone = {
+    type: 'instructions',
+    pages: [
+        `<h1>第一题：声调判断</h1>
+        <div class="instruction-text">
+            <p>您将听到一个音频。</p>
+            <p>请仔细聆听，然后判断这是 <strong>Low</strong> 还是 <strong>High</strong> 声调。</p>
+            <p>点击"开始"继续。</p>
+        </div>`
+    ],
+    show_clickable_nav: true,
+    button_label_next: '开始'
+};
+timeline.push(instructions_tone);
+
+// 3. 第一题：声调判断 (Low/High)
+var trial_1 = {
+    type: 'audio-button-response',
+    stimulus: 'sounds/V02-UTC001-P-NAN001.wav',
+    choices: ['Low', 'High'],
+    prompt: '<p><strong>请选择您听到的声调：</strong></p>',
+    data: {
+        task: 'tone_judgment',
+        trial_number: 1,
+        stimulus: 'V02-UTC001-P-NAN001.wav'
+    }
+};
+timeline.push(trial_1);
+
+// 4. 第二题说明
+var instructions_kpth = {
+    type: 'instructions',
+    pages: [
+        `<h1>第二题：韵尾判断</h1>
+        <div class="instruction-text">
+            <p>您将听到另一个音频。</p>
+            <p>请仔细聆听，然后从以下四个选项中选择您听到的韵尾：</p>
+            <ul>
+                <li><strong>ak</strong></li>
+                <li><strong>ap</strong></li>
+                <li><strong>at</strong></li>
+                <li><strong>ah</strong></li>
+            </ul>
+            <p>点击"开始"继续。</p>
+        </div>`
+    ],
+    show_clickable_nav: true,
+    button_label_next: '开始'
+};
+timeline.push(instructions_kpth);
+
+// 5. 第二题：kpth判断 (ak/ap/at/ah)
+var trial_2 = {
+    type: 'audio-button-response',
+    stimulus: 'sounds/V02-UTC001-P-NAN002.wav',
+    choices: ['ak', 'ap', 'at', 'ah'],
+    prompt: '<p><strong>请选择您听到的韵尾：</strong></p>',
+    data: {
+        task: 'kpth_judgment',
+        trial_number: 2,
+        stimulus: 'V02-UTC001-P-NAN002.wav'
+    }
+};
+timeline.push(trial_2);
+
+// 6. 结束页面
+var debrief = {
+    type: 'instructions',
+    pages: [
+        `<h1>测试完成！</h1>
+        <div class="instruction-text">
+            <p>感谢您的参与！</p>
+            <p>点击"下载数据"按钮保存您的测试结果。</p>
+        </div>`
+    ],
+    show_clickable_nav: true,
+    button_label_next: '下载数据'
+};
+timeline.push(debrief);
+
+/******************************************************************************
+ * 运行实验
+ ******************************************************************************/
+
+jsPsych.init({
+    timeline: timeline,
+    show_progress_bar: true,
+    on_finish: function() {
+        // 获取所有数据
+        var data = jsPsych.data.get().csv();
+        
+        // 生成文件名
+        var filename = 'kpth_perception_' + getTimestamp() + '.csv';
+        
+        // 下载CSV
+        downloadCSV(data, filename);
+        
+        // 显示完成消息
+        document.querySelector('#jspsych-content').innerHTML = 
+            '<h1>数据已保存！</h1><p>您可以关闭此页面。</p>';
+    }
+});
+
+</script>
+</html>
