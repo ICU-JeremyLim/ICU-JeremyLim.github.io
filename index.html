@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Kpth Tone Perception Test</title>
+    
+    <!-- Load jsPsych -->
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/jspsych-instructions.js"></script>
+    <script src="jspsych/jspsych-html-button-response.js"></script>
+    <script src="jspsych/jspsych-survey-text.js"></script>
+    <script src="jspsych/jspsych-survey-multi-choice.js"></script>
+    <link href="css/jspsych.css" rel="stylesheet" type="text/css">
+    
+    <style>
+        body { background-color: #f5f5f5; }
+        .jspsych-btn { margin: 10px; padding: 15px 30px; font-size: 18px; }
+        .jspsych-content-wrapper { width: 85%; max-width: 900px; }
+        .jspsych-content { padding: 30px; }
+        h1 { color: #333; margin-bottom: 20px; }
+        .instruction-text { text-align: left; line-height: 1.6; font-size: 16px; }
+        
+        .audio-player { text-align: center; margin: 30px 0; }
+        .play-button {
+            background-color: #4CAF50; border: none; color: white; padding: 20px;
+            text-align: center; display: inline-block; font-size: 16px; cursor: pointer;
+            border-radius: 50%; width: 80px; height: 80px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: all 0.3s;
+        }
+        .play-button:hover { background-color: #45a049; box-shadow: 0 6px 12px rgba(0,0,0,0.3); transform: scale(1.05); }
+        .play-button:active { transform: scale(0.95); }
+        .play-icon { font-size: 32px; }
+        
+        .trial-header {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+        .trial-number {
+            font-weight: bold;
+            font-size: 20px;
+            color: #333;
+        }
+        .progress-text {
+            font-size: 16px;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .feedback-correct {
+            color: #4CAF50;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .feedback-incorrect {
+            color: #f44336;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .feedback-answer {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        
+        .requirement-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 15px;
+        }
+        .requirement-box strong {
+            color: #856404;
+        }
+        
+        .jspsych-survey-text-question,
+        .jspsych-survey-multi-choice-question {
+            margin: 25px 0;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="jspsych-target"></div>
+</body>
+
+<script>
+
+/******************************************************************************
+ * Google Sheets Configuration
+ ******************************************************************************/
+
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+
+/******************************************************************************
+ * Test Stimuli Configuration
+ ******************************************************************************/
+
+const testSections = {
+    tone_practice: [
+        {audio: 'V02-UTC001-P-NAN001.wav', type: 'tone', answer: 'Low'},
+        {audio: 'V08-UTC003-P-NAN001.wav', type: 'tone', answer: 'High'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'tone', answer: 'Low'},
+        {audio: 'V23-UTC008-P-NAN002.wav', type: 'tone', answer: 'High'}
+    ],
+    tone_main: [
+        {audio: 'V03-UTC001-P-NAN001.wav', type: 'tone'},
+        {audio: 'V05-UTC002-P-NAN001.wav', type: 'tone'},
+        {audio: 'V06-UTC002-P-NAN001.wav', type: 'tone'},
+        {audio: 'V09-UTC003-P-NAN001.wav', type: 'tone'},
+        {audio: 'V11-UTC004-P-NAN001.wav', type: 'tone'},
+        {audio: 'V12-UTC004-P-NAN001.wav', type: 'tone'},
+        {audio: 'V14-UTC005-P-NAN001.wav', type: 'tone'},
+        {audio: 'V17-UTC006-P-NAN001.wav', type: 'tone'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'tone'},
+        {audio: 'V20-UTC007-P-NAN002.wav', type: 'tone'},
+        {audio: 'V21-UTC007-P-NAN002.wav', type: 'tone'},
+        {audio: 'V24-UTC008-P-NAN002.wav', type: 'tone'},
+        {audio: 'V08-UTC003-P-NAN002.wav', type: 'tone'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'tone'},
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'tone'},
+        {audio: 'V23-UTC008-P-NAN002.wav', type: 'tone'},
+        {audio: 'V06-UTC002-P-NAN001.wav', type: 'tone'},
+        {audio: 'V12-UTC004-P-NAN001.wav', type: 'tone'},
+        {audio: 'V21-UTC007-P-NAN002.wav', type: 'tone'},
+        {audio: 'V24-UTC008-P-NAN002.wav', type: 'tone'}
+    ],
+    coda_practice: [
+        {audio: 'V02-UTC001-P-NAN001.wav', type: 'coda', answer: 'ak'},
+        {audio: 'V03-UTC001-P-NAN001.wav', type: 'coda', answer: 'ap'},
+        {audio: 'V05-UTC002-P-NAN001.wav', type: 'coda', answer: 'at'},
+        {audio: 'V08-UTC003-P-NAN001.wav', type: 'coda', answer: 'ah'},
+        {audio: 'V14-UTC005-P-NAN002.wav', type: 'coda', answer: 'ak'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'coda', answer: 'ap'},
+        {audio: 'V23-UTC008-P-NAN002.wav', type: 'coda', answer: 'at'},
+        {audio: 'V24-UTC008-P-NAN002.wav', type: 'coda', answer: 'ah'}
+    ],
+    coda_main: [
+        {audio: 'V06-UTC002-P-NAN001.wav', type: 'coda'},
+        {audio: 'V09-UTC003-P-NAN001.wav', type: 'coda'},
+        {audio: 'V11-UTC004-P-NAN001.wav', type: 'coda'},
+        {audio: 'V12-UTC004-P-NAN001.wav', type: 'coda'},
+        {audio: 'V14-UTC005-P-NAN001.wav', type: 'coda'},
+        {audio: 'V17-UTC006-P-NAN001.wav', type: 'coda'},
+        {audio: 'V18-UTC006-P-NAN001.wav', type: 'coda'},
+        {audio: 'V20-UTC007-P-NAN001.wav', type: 'coda'},
+        {audio: 'V21-UTC007-P-NAN001.wav', type: 'coda'},
+        {audio: 'V23-UTC008-P-NAN001.wav', type: 'coda'},
+        {audio: 'V24-UTC008-P-NAN001.wav', type: 'coda'},
+        {audio: 'V03-UTC001-P-NAN001.wav', type: 'coda'},
+        {audio: 'V05-UTC002-P-NAN001.wav', type: 'coda'},
+        {audio: 'V08-UTC003-P-NAN001.wav', type: 'coda'},
+        {audio: 'V15-UTC005-P-NAN001.wav', type: 'coda'},
+        {audio: 'V02-UTC001-P-NAN001.wav', type: 'coda'},
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'coda'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'coda'},
+        {audio: 'V08-UTC003-P-NAN002.wav', type: 'coda'},
+        {audio: 'V09-UTC003-P-NAN002.wav', type: 'coda'},
+        {audio: 'V11-UTC004-P-NAN002.wav', type: 'coda'},
+        {audio: 'V12-UTC004-P-NAN002.wav', type: 'coda'},
+        {audio: 'V14-UTC005-P-NAN002.wav', type: 'coda'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'coda'},
+        {audio: 'V17-UTC006-P-NAN002.wav', type: 'coda'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'coda'},
+        {audio: 'V20-UTC007-P-NAN002.wav', type: 'coda'},
+        {audio: 'V21-UTC007-P-NAN002.wav', type: 'coda'},
+        {audio: 'V23-UTC008-P-NAN002.wav', type: 'coda'},
+        {audio: 'V24-UTC008-P-NAN002.wav', type: 'coda'},
+        {audio: 'V09-UTC003-P-NAN001.wav', type: 'coda'},
+        {audio: 'V11-UTC004-P-NAN001.wav', type: 'coda'},
+        {audio: 'V17-UTC006-P-NAN001.wav', type: 'coda'},
+        {audio: 'V21-UTC007-P-NAN001.wav', type: 'coda'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'coda'},
+        {audio: 'V12-UTC004-P-NAN002.wav', type: 'coda'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'coda'}
+    ],
+    combined_main: [
+        {audio: 'V02-UTC001-P-NAN001.wav', type: 'combined'},
+        {audio: 'V05-UTC002-P-NAN001.wav', type: 'combined'},
+        {audio: 'V06-UTC002-P-NAN001.wav', type: 'combined'},
+        {audio: 'V08-UTC003-P-NAN001.wav', type: 'combined'},
+        {audio: 'V09-UTC003-P-NAN001.wav', type: 'combined'},
+        {audio: 'V11-UTC004-P-NAN001.wav', type: 'combined'},
+        {audio: 'V12-UTC004-P-NAN001.wav', type: 'combined'},
+        {audio: 'V14-UTC005-P-NAN001.wav', type: 'combined'},
+        {audio: 'V15-UTC005-P-NAN001.wav', type: 'combined'},
+        {audio: 'V17-UTC006-P-NAN001.wav', type: 'combined'},
+        {audio: 'V18-UTC006-P-NAN001.wav', type: 'combined'},
+        {audio: 'V20-UTC007-P-NAN001.wav', type: 'combined'},
+        {audio: 'V21-UTC007-P-NAN001.wav', type: 'combined'},
+        {audio: 'V23-UTC008-P-NAN001.wav', type: 'combined'},
+        {audio: 'V24-UTC008-P-NAN001.wav', type: 'combined'},
+        {audio: 'V03-UTC001-P-NAN001.wav', type: 'combined'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'combined'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'combined'},
+        {audio: 'V08-UTC003-P-NAN002.wav', type: 'combined'},
+        {audio: 'V09-UTC003-P-NAN002.wav', type: 'combined'},
+        {audio: 'V11-UTC004-P-NAN002.wav', type: 'combined'},
+        {audio: 'V12-UTC004-P-NAN002.wav', type: 'combined'},
+        {audio: 'V14-UTC005-P-NAN002.wav', type: 'combined'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'combined'},
+        {audio: 'V17-UTC006-P-NAN002.wav', type: 'combined'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'combined'},
+        {audio: 'V20-UTC007-P-NAN002.wav', type: 'combined'},
+        {audio: 'V21-UTC007-P-NAN002.wav', type: 'combined'},
+        {audio: 'V23-UTC008-P-NAN002.wav', type: 'combined'},
+        {audio: 'V24-UTC008-P-NAN002.wav', type: 'combined'},
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'combined'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'combined'},
+        {audio: 'V06-UTC002-P-NAN001.wav', type: 'combined'},
+        {audio: 'V12-UTC004-P-NAN001.wav', type: 'combined'},
+        {audio: 'V18-UTC006-P-NAN001.wav', type: 'combined'},
+        {audio: 'V24-UTC008-P-NAN001.wav', type: 'combined'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'combined'},
+        {audio: 'V09-UTC003-P-NAN002.wav', type: 'combined'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'combined'},
+        {audio: 'V21-UTC007-P-NAN002.wav', type: 'combined'}
+    ]
+};
+
+// Country list
+const countries = ["Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Austria", "Bangladesh", "Belgium", "Brazil", "Canada", "Chile", "China", "Colombia", "Denmark", "Egypt", "Finland", "France", "Germany", "Greece", "Hong Kong", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Japan", "Kenya", "Malaysia", "Mexico", "Netherlands", "New Zealand", "Nigeria", "Norway", "Pakistan", "Philippines", "Poland", "Portugal", "Russia", "Saudi Arabia", "Singapore", "South Africa", "South Korea", "Spain", "Sweden", "Switzerland", "Taiwan", "Thailand", "Turkey", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Vietnam", "Other"];
+
+// Language list
+const languages = ["Arabic", "Bengali", "Cantonese", "Czech", "Danish", "Dutch", "English", "Finnish", "French", "German", "Greek", "Hebrew", "Hindi", "Hungarian", "Indonesian", "Italian", "Japanese", "Korean", "Malay", "Mandarin", "Min Nan / Taiwanese", "Norwegian", "Persian", "Polish", "Portuguese", "Punjabi", "Romanian", "Russian", "Spanish", "Swahili", "Swedish", "Tagalog", "Tamil", "Telugu", "Thai", "Turkish", "Ukrainian", "Urdu", "Vietnamese", "Other"];
+
+/******************************************************************************
+ * Utility Functions
+ ******************************************************************************/
+
+function getTimestamp() {
+    const dt = new Date();
+    const year = dt.getFullYear();
+    const month = String(dt.getMonth() + 1).padStart(2, '0');
+    const day = String(dt.getDate()).padStart(2, '0');
+    const hour = String(dt.getHours()).padStart(2, '0');
+    const minute = String(dt.getMinutes()).padStart(2, '0');
+    const second = String(dt.getSeconds()).padStart(2, '0');
+    return `${year}${month}${day}_${hour}${minute}${second}`;
+}
+
+function downloadCSV(csv, filename) {
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+}
+
+function createAudioPlayer(audioFile) {
+    return `
+        <div class="audio-player">
+            <button class="play-button" onclick="playAudio('${audioFile}')">
+                <span class="play-icon">▶</span>
+            </button>
+            <p>Click to play audio</p>
+            <audio id="audio-${audioFile.replace(/[^a-zA-Z0-9]/g, '')}" preload="auto">
+                <source src="sounds/${audioFile}" type="audio/wav">
+            </audio>
+        </div>
+    `;
+}
+
+function playAudio(audioFile) {
+    const audioId = 'audio-' + audioFile.replace(/[^a-zA-Z0-9]/g, '');
+    const audio = document.getElementById(audioId);
+    if (audio) {
+        audio.currentTime = 0;
+        audio.play();
+    }
+}
+
+function createPerceptionTrial(stimulus, trialNum, totalTrials, sectionName, isPractice) {
+    let choices, prompt;
+    
+    if (stimulus.type === 'tone') {
+        choices = ['Low', 'High'];
+        prompt = '<p><strong>Is this Low or High tone?</strong></p>';
+    } else if (stimulus.type === 'coda') {
+        choices = ['ak', 'ap', 'at', 'ah'];
+        prompt = '<p><strong>Which coda do you hear?</strong></p>';
+    } else {
+        choices = ['Low-ak', 'Low-ap', 'Low-at', 'Low-ah', 'High-ak', 'High-ap', 'High-at', 'High-ah'];
+        prompt = '<p><strong>Which tone and coda combination do you hear?</strong></p>';
+    }
+    
+    const trial = {
+        type: 'html-button-response',
+        stimulus: function() {
+            const percentage = Math.round((trialNum / totalTrials) * 100);
+            const header = `
+                <div class="trial-header">
+                    <div class="trial-number">Question ${trialNum} of ${totalTrials}</div>
+                    <div class="progress-text">Progress: ${percentage}%</div>
+                </div>
+            `;
+            return header + createAudioPlayer(stimulus.audio) + prompt;
+        },
+        choices: choices,
+        data: {
+            question_number: trialNum,
+            section: sectionName,
+            stimulus: stimulus.audio,
+            task_type: stimulus.type,
+            is_practice: isPractice
+        },
+        on_finish: function(data) {
+            data.response = choices[data.button_pressed];
+            data.response_number = data.button_pressed + 1;
+        }
+    };
+    
+    if (isPractice && stimulus.answer) {
+        return [trial, {
+            type: 'html-button-response',
+            stimulus: function() {
+                const lastTrial = jsPsych.data.get().last(1).values()[0];
+                const correct = lastTrial.response === stimulus.answer;
+                
+                if (correct) {
+                    return `
+                        <div class="feedback-correct">✓ Correct!</div>
+                        <div class="feedback-answer">You selected: ${lastTrial.response}</div>
+                        <p>Click "Continue" for the next question.</p>
+                    `;
+                } else {
+                    return `
+                        <div class="feedback-incorrect">✗ Incorrect</div>
+                        <div class="feedback-answer">You selected: ${lastTrial.response}</div>
+                        <div class="feedback-answer">Correct answer: ${stimulus.answer}</div>
+                        <p>Click "Continue" for the next question.</p>
+                    `;
+                }
+            },
+            choices: ['Continue']
+        }];
+    }
+    
+    return trial;
+}
+
+/******************************************************************************
+ * Build Timeline
+ ******************************************************************************/
+
+var timeline = [];
+
+// Welcome
+timeline.push({
+    type: 'instructions',
+    pages: [`<h1>Welcome to the Perception Test</h1>
+        <div class="instruction-text">
+            <p>Thank you for participating in this study!</p>
+            <p>This test will take approximately <strong>6-8 minutes</strong> to complete.</p>
+            
+            <div class="requirement-box">
+                <strong>Requirements - Please ensure:</strong><br>
+                ✓ You have <strong>no known hearing problems</strong><br>
+                ✓ You are wearing <strong>headphones or earphones</strong><br>
+                ✓ You are using a <strong>computer or tablet</strong> (larger screen preferred)<br>
+                ✓ You are in a <strong>quiet environment</strong>
+            </div>
+            
+            <p>If you meet all these requirements, click "Next" to continue to the background survey.</p>
+        </div>`],
+    show_clickable_nav: true,
+    button_label_next: 'Next'
+});
+
+// Q1: Age (text input for number)
+timeline.push({
+    type: 'survey-text',
+    preamble: '<h2>Background Survey - Question 1 of 8</h2>',
+    questions: [
+        {
+            prompt: '<strong>Q1. What is your age?</strong><br><small>Please enter a number between 0 and 100</small>',
+            name: 'Q1_Age',
+            required: true,
+            placeholder: 'Enter your age'
+        }
+    ],
+    button_label: 'Next',
+    on_finish: function(data) {
+        var age = parseInt(data.response.Q1_Age);
+        if (isNaN(age) || age < 0 || age > 100) {
+            alert('Please enter a valid age between 0 and 100');
+            jsPsych.endCurrentTimeline();
+        }
+    }
+});
+
+// Q2: Gender
+timeline.push({
+    type: 'survey-multi-choice',
+    preamble: '<h2>Background Survey - Question 2 of 8</h2>',
+    questions: [
+        {
+            prompt: '<strong>Q2. What is your gender?</strong>',
+            options: ['Male', 'Female', 'Prefer not to say'],
+            required: true,
+            name: 'Q2_Gender'
+        }
+    ],
+    button_label: 'Next'
+});
+
+// Q3: Country and Region
+timeline.push({
+    type: 'survey-text',
+    preamble: '<h2>Background Survey - Question 3 of 8</h2>',
+    questions: [
+        {
+            prompt: '<strong>Q3a. Where do you come from?</strong><br><small>Country (e.g., Japan, United States, China)</small>',
+            name: 'Q3_Country',
+            required: true,
+            placeholder: 'Enter your country'
+        },
+        {
+            prompt: '<strong>Q3b. Region/State/Province</strong><br><small>e.g., Tokyo, California, Beijing</small>',
+            name: 'Q3_Region',
+            required: true,
+            placeholder: 'Enter your region'
+        }
+    ],
+    button_label: 'Next'
+});
+
+// Q4: L1 Language
+timeline.push({
+    type: 'survey-multi-choice',
+    preamble: '<h2>Background Survey - Question 4 of 8</h2>',
+    questions: [
+        {
+            prompt: '<strong>Q4. Which language did you mainly use before the age of 12?</strong><br><small>Please select ONE option</small>',
+            options: languages,
+            required: true,
+            name: 'Q4_L1'
+        }
+    ],
+    button_label: 'Next'
+});
+
+// Q5: Other fluent languages
+timeline.push({
+    type: 'survey-text',
+    preamble: '<h2>Background Survey - Question 5 of 8</h2>',
+    questions: [
+        {
+            prompt: '<strong>Q5. Which other languages can you speak fluently?</strong><br><small>List all languages separated by commas, or write "None" if no other languages.<br>Example: English, Mandarin, Korean</small>',
+            name: 'Q5_Languages',
+            required: true,
+            placeholder: 'e.g., English, Mandarin or None',
+            rows: 3
+        }
+    ],
+    button_label: 'Next'
+});
+
+// Q6: Music training years
+timeline.push({
+    type: 'survey-text',
+    preamble: '<h2>Background Survey - Question 6 of 8</h2>',
+    questions: [
+        {
+            prompt: '<strong>Q6. How many years of formal musical training have you received?</strong><br><small>Please enter a number between 0 and 50</small>',
+            name: 'Q6_Music_Years',
+            required: true,
+            placeholder: 'Enter number of years'
+        }
+    ],
+    button_label: 'Next',
+    on_finish: function(data) {
+        var years = parseInt(data.response.Q6_Music_Years);
+        if (isNaN(years) || years < 0 || years > 50) {
+            alert('Please enter a valid number between 0 and 50');
+            jsPsych.endCurrentTimeline();
+        }
+    }
+});
+
+// Q7: Absolute pitch
+timeline.push({
+    type: 'survey-multi-choice',
+    preamble: '<h2>Background Survey - Question 7 of 8</h2>',
+    questions: [
+        {
+            prompt: '<strong>Q7. Do you have absolute pitch?</strong>',
+            options: ['YES', 'NO', 'Not Sure'],
+            required: true,
+            name: 'Q7_Absolute_Pitch'
+        }
+    ],
+    button_label: 'Next'
+});
+
+// Q8: Pronunciation training
+timeline.push({
+    type: 'survey-multi-choice',
+    preamble: '<h2>Background Survey - Question 8 of 8</h2>',
+    questions: [
+        {
+            prompt: '<strong>Q8. Have you received any formal pronunciation training?</strong>',
+            options: ['YES', 'NO'],
+            required: true,
+            name: 'Q8_Pronunciation_Training'
+        }
+    ],
+    button_label: 'Start Test'
+});
+
+// Calculate trial counters
+let trialNum = 1;
+let totalTrials = 4 + 20 + 8 + 40 + 40;
+
+// Tone Practice
+timeline.push({
+    type: 'instructions',
+    pages: [`<h1>Part 1: Tone Practice (4 trials)</h1>
+        <div class="instruction-text">
+            <p>You will practice identifying <strong>Low</strong> vs <strong>High</strong> tones.</p>
+            <p>After each answer, you will see if you were correct.</p>
+            <p>Click the green button to play audio. You can replay as many times as you want.</p>
+            <p>Click "Start" when ready.</p>
+        </div>`],
+    show_clickable_nav: true,
+    button_label_next: 'Start'
+});
+
+testSections.tone_practice.forEach(stim => {
+    const trials = createPerceptionTrial(stim, trialNum++, totalTrials, 'Tone_Practice', true);
+    if (Array.isArray(trials)) {
+        trials.forEach(t => timeline.push(t));
+    } else {
+        timeline.push(trials);
+    }
+});
+
+// Tone Main
+timeline.push({
+    type: 'instructions',
+    pages: [`<h1>Part 2: Tone Test (20 trials)</h1>
+        <div class="instruction-text">
+            <p>Now the actual test begins.</p>
+            <p>Continue identifying Low vs High tones.</p>
+            <p>You will NOT see correct answers anymore.</p>
+            <p>Click "Start" when ready.</p>
+        </div>`],
+    show_clickable_nav: true,
+    button_label_next: 'Start'
+});
+
+testSections.tone_main.forEach(stim => {
+    timeline.push(createPerceptionTrial(stim, trialNum++, totalTrials, 'Tone_Main', false));
+});
+
+// Coda Practice
+timeline.push({
+    type: 'instructions',
+    pages: [`<h1>Part 3: Coda Practice (8 trials)</h1>
+        <div class="instruction-text">
+            <p>Now you will practice identifying word-final consonants (codas).</p>
+            <p>Listen for: <strong>ak, ap, at, or ah</strong></p>
+            <p>After each answer, you will see if you were correct.</p>
+            <p>Click "Start" when ready.</p>
+        </div>`],
+    show_clickable_nav: true,
+    button_label_next: 'Start'
+});
+
+testSections.coda_practice.forEach(stim => {
+    const trials = createPerceptionTrial(stim, trialNum++, totalTrials, 'Coda_Practice', true);
+    if (Array.isArray(trials)) {
+        trials.forEach(t => timeline.push(t));
+    } else {
+        timeline.push(trials);
+    }
+});
+
+// Coda Main
+timeline.push({
+    type: 'instructions',
+    pages: [`<h1>Part 4: Coda Test (40 trials)</h1>
+        <div class="instruction-text">
+            <p>Continue identifying codas: ak, ap, at, or ah</p>
+            <p>You will NOT see correct answers anymore.</p>
+            <p>Click "Start" when ready.</p>
+        </div>`],
+    show_clickable_nav: true,
+    button_label_next: 'Start'
+});
+
+testSections.coda_main.forEach(stim => {
+    timeline.push(createPerceptionTrial(stim, trialNum++, totalTrials, 'Coda_Main', false));
+});
+
+// Combined Main
+timeline.push({
+    type: 'instructions',
+    pages: [`<h1>Part 5: Combined Test (40 trials)</h1>
+        <div class="instruction-text">
+            <p>Now you will identify BOTH tone and coda together.</p>
+            <p>Options: Low-ak, Low-ap, Low-at, Low-ah, High-ak, High-ap, High-at, High-ah</p>
+            <p>Click "Start" when ready.</p>
+        </div>`],
+    show_clickable_nav: true,
+    button_label_next: 'Start'
+});
+
+testSections.combined_main.forEach(stim => {
+    timeline.push(createPerceptionTrial(stim, trialNum++, totalTrials, 'Combined_Main', false));
+});
+
+// Debrief
+timeline.push({
+    type: 'instructions',
+    pages: [`<h1>Test Complete!</h1>
+        <div class="instruction-text">
+            <p>Thank you for your participation!</p>
+            <p>Your data is being saved...</p>
+            <p>Click "Finish" to complete.</p>
+        </div>`],
+    show_clickable_nav: true,
+    button_label_next: 'Finish'
+});
+
+/******************************************************************************
+ * Run Experiment
+ ******************************************************************************/
+
+jsPsych.init({
+    timeline: timeline,
+    show_progress_bar: true,
+    on_finish: function() {
+        var allData = jsPsych.data.get();
+        
+        // Get survey responses
+        var surveyData = {};
+        
+        // Q1: Age
+        var q1Data = allData.filter({trial_type: 'survey-text'}).values();
+        if (q1Data.length > 0 && q1Data[0].response.Q1_Age) {
+            surveyData.Q1_Age = q1Data[0].response.Q1_Age;
+        }
+        
+        // Q2: Gender
+        var q2Data = allData.filter({trial_type: 'survey-multi-choice'}).values();
+        if (q2Data.length > 0 && q2Data[0].response.Q2_Gender) {
+            surveyData.Q2_Gender = q2Data[0].response.Q2_Gender;
+        }
+        
+        // Q3: Country and Region
+        if (q1Data.length > 1 && q1Data[1].response.Q3_Country) {
+            surveyData.Q3_Country = q1Data[1].response.Q3_Country;
+            surveyData.Q3_Region = q1Data[1].response.Q3_Region;
+        }
+        
+        // Q4: L1
+        if (q2Data.length > 1 && q2Data[1].response.Q4_L1) {
+            surveyData.Q4_L1 = q2Data[1].response.Q4_L1;
+        }
+        
+        // Q5: Other languages
+        if (q1Data.length > 2 && q1Data[2].response.Q5_Languages) {
+            surveyData.Q5_Languages = q1Data[2].response.Q5_Languages;
+        }
+        
+        // Q6: Music years
+        if (q1Data.length > 3 && q1Data[3].response.Q6_Music_Years) {
+            surveyData.Q6_Music_Years = q1Data[3].response.Q6_Music_Years;
+        }
+        
+        // Q7: Absolute pitch
+        if (q2Data.length > 2 && q2Data[2].response.Q7_Absolute_Pitch) {
+            surveyData.Q7_Absolute_Pitch = q2Data[2].response.Q7_Absolute_Pitch;
+        }
+        
+        // Q8: Pronunciation training
+        if (q2Data.length > 3 && q2Data[3].response.Q8_Pronunciation_Training) {
+            surveyData.Q8_Pronunciation_Training = q2Data[3].response.Q8_Pronunciation_Training;
+        }
+        
+        // Get perception trials
+        var perceptionData = allData.filter({trial_type: 'html-button-response'}).filter(function(trial) {
+            return trial.question_number !== undefined && !trial.choices.includes('Continue');
+        });
+        
+        // Build CSV with 1-based indexing
+        var csvContent = "Question_Number,Response,Response_Number\n";
+        
+        // Add survey responses
+        csvContent += `Q1_Age,"${surveyData.Q1_Age || 'N/A'}",${surveyData.Q1_Age || 'N/A'}\n`;
+        
+        var genderOptions = ['Male', 'Female', 'Prefer not to say'];
+        var genderNum = genderOptions.indexOf(surveyData.Q2_Gender) + 1;
+        csvContent += `Q2_Gender,"${surveyData.Q2_Gender || 'N/A'}",${genderNum || 'N/A'}\n`;
+        
+        csvContent += `Q3_Country,"${surveyData.Q3_Country || 'N/A'}",N/A\n`;
+        csvContent += `Q3_Region,"${surveyData.Q3_Region || 'N/A'}",N/A\n`;
+        
+        var langIndex = languages.indexOf(surveyData.Q4_L1) + 1;
+        csvContent += `Q4_L1,"${surveyData.Q4_L1 || 'N/A'}",${langIndex || 'N/A'}\n`;
+        
+        csvContent += `Q5_Languages,"${surveyData.Q5_Languages || 'N/A'}",N/A\n`;
+        csvContent += `Q6_Music_Years,"${surveyData.Q6_Music_Years || 'N/A'}",${surveyData.Q6_Music_Years || 'N/A'}\n`;
+        
+        var pitchOptions = ['YES', 'NO', 'Not Sure'];
+        var pitchNum = pitchOptions.indexOf(surveyData.Q7_Absolute_Pitch) + 1;
+        csvContent += `Q7_Absolute_Pitch,"${surveyData.Q7_Absolute_Pitch || 'N/A'}",${pitchNum || 'N/A'}\n`;
+        
+        var trainOptions = ['YES', 'NO'];
+        var trainNum = trainOptions.indexOf(surveyData.Q8_Pronunciation_Training) + 1;
+        csvContent += `Q8_Pronunciation_Training,"${surveyData.Q8_Pronunciation_Training || 'N/A'}",${trainNum || 'N/A'}\n`;
+        
+        // Add perception trials
+        perceptionData.values().forEach(function(trial) {
+            var qNum = parseInt(trial.question_number) + 8;
+            csvContent += `${qNum},${trial.response},${trial.response_number}\n`;
+        });
+        
+        // Download CSV
+        var filename = 'kpth_perception_' + getTimestamp() + '.csv';
+        downloadCSV(csvContent, filename);
+        
+        // Upload to Google Sheets
+        uploadToGoogleSheets(csvContent);
+        
+        document.querySelector('#jspsych-content').innerHTML = 
+            '<h1>Data saved! Thank you for participating.</h1><p>You may close this page.</p>';
+    }
+});
+
+function uploadToGoogleSheets(csvData) {
+    fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+        body: csvData
+    }).then(function() {
+        console.log('Data uploaded to Google Sheets');
+    }).catch(function(error) {
+        console.log('Could not upload to Google Sheets:', error);
+    });
+}
+
+</script>
+</html>
