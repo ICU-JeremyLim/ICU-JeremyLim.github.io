@@ -163,6 +163,7 @@ const regionsByCountry = {
 const languages = ["Arabic", "Bengali", "Cantonese", "Czech", "Danish", "Dutch", "English", "Finnish", "French", "German", "Greek", "Hebrew", "Hindi", "Hungarian", "Indonesian", "Italian", "Japanese", "Korean", "Malay", "Mandarin", "Min Nan / Taiwanese", "Norwegian", "Persian", "Polish", "Portuguese", "Punjabi", "Romanian", "Russian", "Spanish", "Swahili", "Swedish", "Tagalog", "Tamil", "Telugu", "Thai", "Turkish", "Ukrainian", "Urdu", "Vietnamese", "Wu Chinese", "Yue Chinese", "Other"];
 
 var surveyResponses = {};
+var surveyCompleted = false;
 
 function getTimestamp() {
     const dt = new Date();
@@ -274,12 +275,13 @@ function validateSurveyForm() {
     });
     
     const numLangs = parseInt(document.getElementById('q5_num').value) || 0;
-    for (let i = 0; i < numLangs; i++) {
-        const langElem = document.getElementById(`q5_lang_${i}`);
-        if (!langElem || !langElem.value) {
-            allValid = false;
-            alert('Please select all languages!');
-            break;
+    if (numLangs > 0) {
+        for (let i = 0; i < numLangs; i++) {
+            const langElem = document.getElementById(`q5_lang_${i}`);
+            if (!langElem || !langElem.value) {
+                allValid = false;
+                break;
+            }
         }
     }
     
@@ -308,6 +310,7 @@ function collectSurveyData() {
         Q7_Absolute_Pitch: document.getElementById('q7_pitch').value,
         Q8_Pronunciation_Training: document.getElementById('q8_training').value
     };
+    surveyCompleted = true;
 }
 
 var timeline = [];
@@ -361,12 +364,12 @@ timeline.push({
     },
     choices: ['Start Test'],
     on_finish: function(data) {
-        if (validateSurveyForm()) {
-            collectSurveyData();
-        } else {
+        if (!validateSurveyForm()) {
             alert('Please complete all required fields!');
-            jsPsych.endCurrentTimeline();
+            data.repeat_trial = true;
+            return;
         }
+        collectSurveyData();
     }
 });
 
@@ -394,7 +397,7 @@ jsPsych.init({
     timeline: timeline,
     show_progress_bar: true,
     on_finish: function() {
-        var perceptionData = jsPsych.data.get().filter({trial_type: 'html-button-response'}).filter(t => t.question_number !== undefined && !t.choices.includes('Continue'));
+        var perceptionData = jsPsych.data.get().filter({trial_type: 'html-button-response'}).filter(t => t.question_number !== undefined && !t.choices.includes('Continue') && !t.choices.includes('Start Test'));
         
         var csvContent = "Question_Number,Response,Response_Number\n";
         
