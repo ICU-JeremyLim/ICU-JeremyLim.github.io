@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Kpth Tone Perception Test</title>
+    
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/jspsych-instructions.js"></script>
+    <script src="jspsych/jspsych-html-button-response.js"></script>
+    <link href="css/jspsych.css" rel="stylesheet" type="text/css">
+    
+    <style>
+        body { background-color: #f5f5f5; }
+        .jspsych-btn { margin: 10px; padding: 15px 30px; font-size: 18px; }
+        .jspsych-content-wrapper { width: 85%; max-width: 900px; }
+        .jspsych-content { padding: 30px; }
+        h1 { color: #333; margin-bottom: 20px; }
+        .instruction-text { text-align: left; line-height: 1.6; font-size: 16px; }
+        
+        .audio-player { text-align: center; margin: 30px 0; }
+        .play-button {
+            background-color: #4CAF50; border: none; color: white; padding: 20px;
+            text-align: center; display: inline-block; font-size: 16px; cursor: pointer;
+            border-radius: 50%; width: 80px; height: 80px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: all 0.3s;
+        }
+        .play-button:hover { background-color: #45a049; box-shadow: 0 6px 12px rgba(0,0,0,0.3); transform: scale(1.05); }
+        .play-button:active { transform: scale(0.95); }
+        .play-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .play-icon { font-size: 32px; }
+        
+        .trial-header { text-align: center; margin-bottom: 20px; font-size: 18px; color: #666; }
+        .trial-number { font-weight: bold; font-size: 20px; color: #333; }
+        .progress-text { font-size: 16px; color: #888; margin-top: 5px; }
+        
+        .feedback-correct { color: #4CAF50; font-size: 24px; font-weight: bold; margin: 20px 0; }
+        .feedback-incorrect { color: #f44336; font-size: 24px; font-weight: bold; margin: 20px 0; }
+        .feedback-answer { font-size: 18px; margin: 10px 0; }
+        
+        .requirement-box {
+            background-color: #fff3cd; border-left: 4px solid #ffc107;
+            padding: 15px; margin: 20px 0; font-size: 15px;
+        }
+        .requirement-box strong { color: #856404; }
+        
+        .survey-form { text-align: left; max-width: 700px; margin: 0 auto; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label {
+            display: block; font-size: 16px; font-weight: bold;
+            margin-bottom: 8px; color: #333;
+        }
+        .form-group small {
+            display: block; color: #666; font-size: 14px; margin-bottom: 8px;
+        }
+        .form-group select {
+            width: 100%; max-width: 500px; padding: 10px;
+            font-size: 16px; border: 1px solid #ccc;
+            border-radius: 4px; background-color: white;
+            cursor: pointer;
+        }
+        .language-select-container { margin-top: 15px; }
+        .language-select-item { margin-bottom: 10px; }
+        
+        .jspsych-btn-group.combined-buttons {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            grid-template-rows: repeat(2, 1fr) !important;
+            gap: 10px !important;
+            max-width: 800px !important;
+            margin: 20px auto !important;
+        }
+        .jspsych-btn-group.combined-buttons .jspsych-btn {
+            margin: 0 !important;
+            width: 100% !important;
+            padding: 15px !important;
+        }
+    </style>
+</head>
+
+<body></body>
+
+<script>
+
+window.surveyData = {
+    Q1_Age: '',
+    Q2_Gender: '',
+    Q3_Country: '',
+    Q3_Region: '',
+    Q4_L1: '',
+    Q5_Num_Languages: '',
+    Q5_Languages: '',
+    Q6_Music_Years: '',
+    Q7_Absolute_Pitch: '',
+    Q8_Pronunciation_Training: ''
+};
+window.audioPlayedOnce = {};
+
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+
+// 根据图片重新定义题目
+const testSections = {
+    // Tone Practice - 4题
+    tone_practice: [
+        {audio: 'V02-UTC001-P-NAN001.wav', type: 'tone', answer: 'Low'},
+        {audio: 'V05-UTC002-P-NAN001.wav', type: 'tone', answer: 'High'},
+        {audio: 'V14-UTC005-P-NAN001.wav', type: 'tone', answer: 'Low'},
+        {audio: 'V17-UTC006-P-NAN001.wav', type: 'tone', answer: 'High'}
+    ],
+    
+    // Tone Test - 20题（Random Series）
+    tone_main: [
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'tone'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'tone'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'tone'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'tone'},
+        {audio: 'V08-UTC003-P-NAN002.wav', type: 'tone'},
+        {audio: 'V09-UTC003-P-NAN002.wav', type: 'tone'},
+        {audio: 'V11-UTC004-P-NAN002.wav', type: 'tone'},
+        {audio: 'V12-UTC004-P-NAN002.wav', type: 'tone'},
+        {audio: 'V14-UTC005-P-NAN002.wav', type: 'tone'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'tone'},
+        {audio: 'V17-UTC006-P-NAN002.wav', type: 'tone'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'tone'},
+        {audio: 'V20-UTC007-P-NAN002.wav', type: 'tone'},
+        {audio: 'V21-UTC007-P-NAN002.wav', type: 'tone'},
+        {audio: 'V23-UTC008-P-NAN002.wav', type: 'tone'},
+        {audio: 'V24-UTC008-P-NAN002.wav', type: 'tone'},
+        // 第二轮
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'tone'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'tone'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'tone'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'tone'}
+    ],
+    
+    // Coda Practice - 6题（移除ah）
+    coda_practice: [
+        {audio: 'V02-UTC001-P-NAN001.wav', type: 'coda', answer: 'ak'},
+        {audio: 'V05-UTC002-P-NAN001.wav', type: 'coda', answer: 'ak'},
+        {audio: 'V08-UTC003-P-NAN001.wav', type: 'coda', answer: 'ap'},
+        {audio: 'V11-UTC004-P-NAN001.wav', type: 'coda', answer: 'ap'},
+        {audio: 'V14-UTC005-P-NAN001.wav', type: 'coda', answer: 'at'},
+        {audio: 'V17-UTC006-P-NAN001.wav', type: 'coda', answer: 'at'}
+    ],
+    
+    // Coda Test - 40题（Random Series，移除ah）
+    coda_main: [
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'coda'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'coda'},
+        {audio: 'V08-UTC003-P-NAN002.wav', type: 'coda'},
+        {audio: 'V09-UTC003-P-NAN002.wav', type: 'coda'},
+        {audio: 'V11-UTC004-P-NAN002.wav', type: 'coda'},
+        {audio: 'V12-UTC004-P-NAN002.wav', type: 'coda'},
+        {audio: 'V14-UTC005-P-NAN002.wav', type: 'coda'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'coda'},
+        {audio: 'V17-UTC006-P-NAN002.wav', type: 'coda'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'coda'},
+        // 第二轮
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'coda'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'coda'},
+        {audio: 'V08-UTC003-P-NAN002.wav', type: 'coda'},
+        {audio: 'V09-UTC003-P-NAN002.wav', type: 'coda'},
+        {audio: 'V11-UTC004-P-NAN002.wav', type: 'coda'},
+        {audio: 'V12-UTC004-P-NAN002.wav', type: 'coda'},
+        {audio: 'V14-UTC005-P-NAN002.wav', type: 'coda'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'coda'},
+        {audio: 'V17-UTC006-P-NAN002.wav', type: 'coda'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'coda'},
+        // 第三轮
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'coda'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'coda'},
+        {audio: 'V08-UTC003-P-NAN002.wav', type: 'coda'},
+        {audio: 'V09-UTC003-P-NAN002.wav', type: 'coda'},
+        {audio: 'V11-UTC004-P-NAN002.wav', type: 'coda'},
+        {audio: 'V12-UTC004-P-NAN002.wav', type: 'coda'},
+        {audio: 'V14-UTC005-P-NAN002.wav', type: 'coda'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'coda'},
+        {audio: 'V17-UTC006-P-NAN002.wav', type: 'coda'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'coda'},
+        // 第四轮
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'coda'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'coda'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'coda'}
+    ],
+    
+    // Combined Test - 40题（与Coda Test相同音频，只有6个选项）
+    combined_main: [
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'combined'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'combined'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'combined'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'combined'},
+        {audio: 'V08-UTC003-P-NAN002.wav', type: 'combined'},
+        {audio: 'V09-UTC003-P-NAN002.wav', type: 'combined'},
+        {audio: 'V11-UTC004-P-NAN002.wav', type: 'combined'},
+        {audio: 'V12-UTC004-P-NAN002.wav', type: 'combined'},
+        {audio: 'V14-UTC005-P-NAN002.wav', type: 'combined'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'combined'},
+        {audio: 'V17-UTC006-P-NAN002.wav', type: 'combined'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'combined'},
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'combined'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'combined'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'combined'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'combined'},
+        {audio: 'V08-UTC003-P-NAN002.wav', type: 'combined'},
+        {audio: 'V09-UTC003-P-NAN002.wav', type: 'combined'},
+        {audio: 'V11-UTC004-P-NAN002.wav', type: 'combined'},
+        {audio: 'V12-UTC004-P-NAN002.wav', type: 'combined'},
+        {audio: 'V14-UTC005-P-NAN002.wav', type: 'combined'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'combined'},
+        {audio: 'V17-UTC006-P-NAN002.wav', type: 'combined'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'combined'},
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'combined'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'combined'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'combined'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'combined'},
+        {audio: 'V08-UTC003-P-NAN002.wav', type: 'combined'},
+        {audio: 'V09-UTC003-P-NAN002.wav', type: 'combined'},
+        {audio: 'V11-UTC004-P-NAN002.wav', type: 'combined'},
+        {audio: 'V12-UTC004-P-NAN002.wav', type: 'combined'},
+        {audio: 'V14-UTC005-P-NAN002.wav', type: 'combined'},
+        {audio: 'V15-UTC005-P-NAN002.wav', type: 'combined'},
+        {audio: 'V17-UTC006-P-NAN002.wav', type: 'combined'},
+        {audio: 'V18-UTC006-P-NAN002.wav', type: 'combined'},
+        {audio: 'V02-UTC001-P-NAN002.wav', type: 'combined'},
+        {audio: 'V03-UTC001-P-NAN002.wav', type: 'combined'},
+        {audio: 'V05-UTC002-P-NAN002.wav', type: 'combined'},
+        {audio: 'V06-UTC002-P-NAN002.wav', type: 'combined'}
+    ]
+};
+
+const countries = ["China", "Hong Kong", "Macau", "Taiwan", "Japan", "South Korea", "United States", "United Kingdom", "Canada", "Australia", "Germany", "France", "Italy", "Spain", "Netherlands", "Belgium", "Switzerland", "Austria", "Sweden", "Norway", "Denmark", "Finland", "Poland", "Russia", "India", "Indonesia", "Thailand", "Vietnam", "Philippines", "Malaysia", "Singapore", "Brazil", "Mexico", "Argentina", "Chile", "South Africa", "Egypt", "Turkey", "Saudi Arabia", "United Arab Emirates", "Israel", "New Zealand", "Ireland", "Portugal", "Greece", "Czech Republic", "Hungary", "Romania", "Other"];
+
+const regionsByCountry = {
+    "China": ["Beijing", "Shanghai", "Tianjin", "Chongqing", "Hebei", "Shanxi", "Liaoning", "Jilin", "Heilongjiang", "Jiangsu", "Zhejiang", "Anhui", "Fujian", "Jiangxi", "Shandong", "Henan", "Hubei", "Hunan", "Guangdong", "Guangxi", "Hainan", "Sichuan", "Guizhou", "Yunnan", "Shaanxi", "Gansu", "Qinghai", "Inner Mongolia", "Ningxia", "Xinjiang", "Tibet", "Other"],
+    "Hong Kong": ["Hong Kong Island", "Kowloon", "New Territories"],
+    "Macau": ["Macau Peninsula", "Taipa", "Coloane"],
+    "Taiwan": ["Taipei", "New Taipei", "Taoyuan", "Taichung", "Tainan", "Kaohsiung", "Keelung", "Hsinchu", "Chiayi", "Changhua", "Nantou", "Yunlin", "Pingtung", "Yilan", "Hualien", "Taitung", "Penghu", "Kinmen", "Lienchiang", "Other"],
+    "Japan": ["Hokkaido", "Aomori", "Iwate", "Miyagi", "Akita", "Yamagata", "Fukushima", "Ibaraki", "Tochigi", "Gunma", "Saitama", "Chiba", "Tokyo", "Kanagawa", "Niigata", "Toyama", "Ishikawa", "Fukui", "Yamanashi", "Nagano", "Gifu", "Shizuoka", "Aichi", "Mie", "Shiga", "Kyoto", "Osaka", "Hyogo", "Nara", "Wakayama", "Tottori", "Shimane", "Okayama", "Hiroshima", "Yamaguchi", "Tokushima", "Kagawa", "Ehime", "Kochi", "Fukuoka", "Saga", "Nagasaki", "Kumamoto", "Oita", "Miyazaki", "Kagoshima", "Okinawa"],
+    "South Korea": ["Seoul", "Busan", "Incheon", "Daegu", "Daejeon", "Gwangju", "Ulsan", "Sejong", "Gyeonggi-do", "Gangwon-do", "Chungcheongbuk-do", "Chungcheongnam-do", "Jeollabuk-do", "Jeollanam-do", "Gyeongsangbuk-do", "Gyeongsangnam-do", "Jeju", "Other"],
+    "United States": ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming", "Other"],
+    "United Kingdom": ["England", "Scotland", "Wales", "Northern Ireland", "Other"],
+    "Canada": ["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Northwest Territories", "Nova Scotia", "Nunavut", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon", "Other"],
+    "Australia": ["New South Wales", "Victoria", "Queensland", "South Australia", "Western Australia", "Tasmania", "Northern Territory", "Australian Capital Territory", "Other"],
+    "Germany": ["Baden-Württemberg", "Bavaria", "Berlin", "Brandenburg", "Bremen", "Hamburg", "Hesse", "Lower Saxony", "Mecklenburg-Vorpommern", "North Rhine-Westphalia", "Rhineland-Palatinate", "Saarland", "Saxony", "Saxony-Anhalt", "Schleswig-Holstein", "Thuringia", "Other"],
+    "France": ["Île-de-France", "Auvergne-Rhône-Alpes", "Provence-Alpes-Côte d'Azur", "Nouvelle-Aquitaine", "Occitanie", "Hauts-de-France", "Brittany", "Normandy", "Grand Est", "Pays de la Loire", "Centre-Val de Loire", "Bourgogne-Franche-Comté", "Corsica", "Other"],
+    "India": ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Other"]
+};
+
+const languages = ["Arabic", "Bengali", "Cantonese", "Czech", "Danish", "Dutch", "English", "Finnish", "French", "German", "Greek", "Hebrew", "Hindi", "Hungarian", "Indonesian", "Italian", "Japanese", "Korean", "Malay", "Mandarin", "Min Nan / Taiwanese", "Norwegian", "Persian", "Polish", "Portuguese", "Punjabi", "Romanian", "Russian", "Spanish", "Swahili", "Swedish", "Tagalog", "Tamil", "Telugu", "Thai", "Turkish", "Ukrainian", "Urdu", "Vietnamese", "Wu Chinese", "Yue Chinese", "Other"];
+
+function getTimestamp() {
+    const dt = new Date();
+    return `${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}_${String(dt.getHours()).padStart(2,'0')}${String(dt.getMinutes()).padStart(2,'0')}${String(dt.getSeconds()).padStart(2,'0')}`;
+}
+
+function downloadCSV(csv, filename) {
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+}
+
+function createAudioPlayer(audioFile, isPractice) {
+    const cleanId = audioFile.replace(/[^a-zA-Z0-9]/g, '');
+    return `
+        <div class="audio-player">
+            <button class="play-button" id="btn-${cleanId}" onclick="playAudio('${audioFile}', ${isPractice})">
+                <span class="play-icon">▶</span>
+            </button>
+            <p>Click to play audio</p>
+            <audio id="audio-${cleanId}" preload="auto">
+                <source src="sounds/${audioFile}" type="audio/wav">
+            </audio>
+        </div>
+    `;
+}
+
+function playAudio(audioFile, isPractice) {
+    const cleanId = audioFile.replace(/[^a-zA-Z0-9]/g, '');
+    const audio = document.getElementById('audio-' + cleanId);
+    const button = document.getElementById('btn-' + cleanId);
+    
+    if (audio && button) {
+        audio.currentTime = 0;
+        audio.play();
+        
+        if (!isPractice) {
+            window.audioPlayedOnce[audioFile] = true;
+            button.disabled = true;
+        }
+    }
+}
+
+function updateRegions() {
+    const country = document.getElementById('q3_country').value;
+    const regionSelect = document.getElementById('q3_region');
+    regionSelect.innerHTML = '<option value="">-- Select Region --</option>';
+    const regions = regionsByCountry[country] || ['Other'];
+    regions.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        regionSelect.appendChild(opt);
+    });
+    window.surveyData.Q3_Country = country;
+}
+
+function updateLanguageSelects() {
+    const num = parseInt(document.getElementById('q5_num').value) || 0;
+    const container = document.getElementById('language-select-container');
+    container.innerHTML = '';
+    
+    window.surveyData.Q5_Num_Languages = num.toString();
+    
+    for (let i = 0; i < num; i++) {
+        const div = document.createElement('div');
+        div.className = 'language-select-item';
+        div.innerHTML = `<label>Language ${i+1}:</label><select id="q5_lang_${i}" onchange="updateLanguages()" required><option value="">-- Select Language --</option>${languages.map(l => `<option value="${l}">${l}</option>`).join('')}</select>`;
+        container.appendChild(div);
+    }
+}
+
+function updateLanguages() {
+    const numLangs = parseInt(document.getElementById('q5_num').value) || 0;
+    const langsList = [];
+    for (let i = 0; i < numLangs; i++) {
+        const langElem = document.getElementById(`q5_lang_${i}`);
+        if (langElem && langElem.value) {
+            langsList.push(langElem.value);
+        }
+    }
+    window.surveyData.Q5_Languages = langsList.join('; ') || 'None';
+}
+
+function validateSurvey() {
+    if (!window.surveyData.Q1_Age || !window.surveyData.Q2_Gender || 
+        !window.surveyData.Q3_Country || !window.surveyData.Q3_Region ||
+        !window.surveyData.Q4_L1 || !window.surveyData.Q5_Num_Languages ||
+        !window.surveyData.Q6_Music_Years || !window.surveyData.Q7_Absolute_Pitch ||
+        !window.surveyData.Q8_Pronunciation_Training) {
+        alert('Please complete all required fields!');
+        return false;
+    }
+    
+    const numLangs = parseInt(window.surveyData.Q5_Num_Languages) || 0;
+    if (numLangs > 0 && window.surveyData.Q5_Languages === '') {
+        alert('Please select all languages!');
+        return false;
+    }
+    
+    return true;
+}
+
+function createPerceptionTrial(stimulus, trialNum, totalTrials, sectionName, isPractice) {
+    let choices, prompt;
+    
+    if (stimulus.type === 'tone') {
+        choices = ['Low', 'High'];
+        prompt = '<p><strong>Is this Low or High tone?</strong></p>';
+    } else if (stimulus.type === 'coda') {
+        choices = ['ak', 'ap', 'at'];  // 移除ah
+        prompt = '<p><strong>Which coda do you hear?</strong></p>';
+    } else {
+        choices = ['Low-ak', 'Low-ap', 'Low-at', 'High-ak', 'High-ap', 'High-at'];  // 只有6个选项
+        prompt = '<p><strong>Which tone and coda combination do you hear?</strong></p>';
+    }
+    
+    const trial = {
+        type: 'html-button-response',
+        stimulus: function() {
+            let header = '';
+            if (!isPractice) {
+                const percentage = Math.round((trialNum / totalTrials) * 100);
+                header = `<div class="trial-header"><div class="trial-number">Question ${trialNum} of ${totalTrials}</div><div class="progress-text">Progress: ${percentage}%</div></div>`;
+            }
+            return header + createAudioPlayer(stimulus.audio, isPractice) + prompt;
+        },
+        choices: choices,
+        data: { 
+            question_number: trialNum,
+            section: sectionName, 
+            stimulus: stimulus.audio, 
+            task_type: stimulus.type, 
+            is_practice: isPractice 
+        },
+        on_load: function() {
+            if (stimulus.type === 'combined') {
+                const btnGroup = document.querySelector('.jspsych-btn-group');
+                if (btnGroup) {
+                    btnGroup.classList.add('combined-buttons');
+                }
+            }
+        },
+        on_finish: function(data) {
+            data.response = choices[data.button_pressed];
+        }
+    };
+    
+    if (isPractice && stimulus.answer) {
+        return [trial, {
+            type: 'html-button-response',
+            stimulus: function() {
+                const lastTrial = jsPsych.data.get().last(1).values()[0];
+                const correct = lastTrial.response === stimulus.answer;
+                return correct ? 
+                    `<div class="feedback-correct">✓ Correct!</div><div class="feedback-answer">You selected: ${lastTrial.response}</div><p>Click "Continue".</p>` : 
+                    `<div class="feedback-incorrect">✗ Incorrect</div><div class="feedback-answer">You selected: ${lastTrial.response}</div><div class="feedback-answer">Correct answer: ${stimulus.answer}</div><p>Click "Continue".</p>`;
+            },
+            choices: ['Continue'],
+            data: { is_feedback: true }
+        }];
+    }
+    return trial;
+}
+
+var timeline = [];
+
+timeline.push({
+    type: 'instructions',
+    pages: [`<h1>Welcome to the Perception Test</h1><div class="instruction-text"><p>Thank you for participating!</p><p>This test will take approximately <strong>6-8 minutes</strong>.</p><div class="requirement-box"><strong>Requirements:</strong><br>✓ <strong>No known hearing problems</strong><br>✓ Wearing <strong>headphones</strong><br>✓ Using <strong>computer or tablet</strong><br>✓ In a <strong>quiet environment</strong></div><p>Click "Next" to continue.</p></div>`],
+    show_clickable_nav: true,
+    button_label_next: 'Next'
+});
+
+timeline.push({
+    type: 'html-button-response',
+    stimulus: function() {
+        let html = '<div class="survey-form"><h1>Background Survey</h1><p style="margin-bottom:30px;">Please answer all questions (marked with <span style="color:red;">*</span>).</p>';
+        
+        html += '<div class="form-group"><label for="q1_age">Q1. What is your age? <span style="color:red;">*</span></label><small>Select a number between 0 and 100</small><select id="q1_age" onchange="window.surveyData.Q1_Age=this.value;" required><option value="">-- Select Age --</option>';
+        for (let i = 0; i <= 100; i++) {
+            html += `<option value="${i}">${i}</option>`;
+        }
+        html += '</select></div>';
+        
+        html += '<div class="form-group"><label for="q2_gender">Q2. What is your gender? <span style="color:red;">*</span></label><select id="q2_gender" onchange="window.surveyData.Q2_Gender=this.value;" required><option value="">-- Select --</option><option value="Male">Male</option><option value="Female">Female</option><option value="Prefer not to say">Prefer not to say</option></select></div>';
+        
+        html += '<div class="form-group"><label for="q3_country">Q3. Where do you come from? <span style="color:red;">*</span></label><small>Select a country or area and a specific region</small><select id="q3_country" onchange="updateRegions()" required><option value="">-- Select Country/Area --</option>';
+        countries.forEach(c => html += `<option value="${c}">${c}</option>`);
+        html += '</select><select id="q3_region" onchange="window.surveyData.Q3_Region=this.value;" style="margin-top:10px;" required><option value="">-- First select a country --</option></select></div>';
+        
+        html += '<div class="form-group"><label for="q4_l1">Q4. Which language did you mainly use before age 12? <span style="color:red;">*</span></label><small>Select ONE option</small><select id="q4_l1" onchange="window.surveyData.Q4_L1=this.value;" required><option value="">-- Select Language --</option>';
+        languages.forEach(l => html += `<option value="${l}">${l}</option>`);
+        html += '</select></div>';
+        
+        html += '<div class="form-group"><label for="q5_num">Q5. How many other languages can you speak fluently? <span style="color:red;">*</span></label><small>Select the number, then choose each language</small><select id="q5_num" onchange="updateLanguageSelects()" required><option value="">-- Select Number --</option><option value="0">0 (None)</option>';
+        for (let i = 1; i <= 10; i++) {
+            html += `<option value="${i}">${i}</option>`;
+        }
+        html += '</select><div id="language-select-container" class="language-select-container"></div></div>';
+        
+        html += '<div class="form-group"><label for="q6_music">Q6. How many years of formal musical training? <span style="color:red;">*</span></label><small>Select a number between 0 and 50</small><select id="q6_music" onchange="window.surveyData.Q6_Music_Years=this.value;" required><option value="">-- Select Years --</option>';
+        for (let i = 0; i <= 50; i++) {
+            html += `<option value="${i}">${i}</option>`;
+        }
+        html += '</select></div>';
+        
+        html += '<div class="form-group"><label for="q7_pitch">Q7. Do you have absolute pitch? <span style="color:red;">*</span></label><select id="q7_pitch" onchange="window.surveyData.Q7_Absolute_Pitch=this.value;" required><option value="">-- Select --</option><option value="YES">YES</option><option value="NO">NO</option><option value="Not Sure">Not Sure</option></select></div>';
+        
+        html += '<div class="form-group"><label for="q8_training">Q8. Have you received formal pronunciation training? <span style="color:red;">*</span></label><select id="q8_training" onchange="window.surveyData.Q8_Pronunciation_Training=this.value;" required><option value="">-- Select --</option><option value="YES">YES</option><option value="NO">NO</option></select></div>';
+        
+        html += '</div>';
+        return html;
+    },
+    choices: ['Start Test'],
+    data: { is_survey: true },
+    on_load: function() {
+        const btn = document.querySelector('.jspsych-btn');
+        if (btn) {
+            btn.onclick = function(e) {
+                if (!validateSurvey()) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    return false;
+                }
+            };
+        }
+    }
+});
+
+let trialNum = 1;
+let totalTrials = 20 + 40 + 40;
+
+// Tone Practice - 4题
+timeline.push({type: 'instructions', pages: [`<h1>Part 1: Tone Practice (4 trials)</h1><div class="instruction-text"><p>Practice identifying <strong>Low</strong> vs <strong>High</strong> tones.</p><p>After each answer, you'll see if you were correct.</p><p>You can replay audio as many times as you want.</p><p>Click "Start" when ready.</p></div>`], show_clickable_nav: true, button_label_next: 'Start'});
+testSections.tone_practice.forEach(stim => { const trials = createPerceptionTrial(stim, null, totalTrials, 'Tone_Practice', true); if (Array.isArray(trials)) trials.forEach(t => timeline.push(t)); else timeline.push(trials); });
+
+// Tone Test - 20题
+timeline.push({type: 'instructions', pages: [`<h1>Part 2: Tone Test (20 trials)</h1><div class="instruction-text"><p>Continue identifying Low vs High tones.</p><p>You will NOT see correct answers.</p><p><strong>Important: Each audio can only be played ONCE!</strong></p><p>Click "Start" when ready.</p></div>`], show_clickable_nav: true, button_label_next: 'Start'});
+testSections.tone_main.forEach(stim => timeline.push(createPerceptionTrial(stim, trialNum++, totalTrials, 'Tone_Main', false)));
+
+// Coda Practice - 6题
+timeline.push({type: 'instructions', pages: [`<h1>Part 3: Coda Practice (6 trials)</h1><div class="instruction-text"><p>Practice identifying word-final consonants (codas).</p><p>Listen for: <strong>ak, ap, or at</strong></p><p>You can replay audio as many times as you want.</p><p>Click "Start" when ready.</p></div>`], show_clickable_nav: true, button_label_next: 'Start'});
+testSections.coda_practice.forEach(stim => { const trials = createPerceptionTrial(stim, null, totalTrials, 'Coda_Practice', true); if (Array.isArray(trials)) trials.forEach(t => timeline.push(t)); else timeline.push(trials); });
+
+// Coda Test - 40题
+timeline.push({type: 'instructions', pages: [`<h1>Part 4: Coda Test (40 trials)</h1><div class="instruction-text"><p>Continue identifying codas: <strong>ak, ap, or at</strong></p><p><strong>Important: Each audio can only be played ONCE!</strong></p><p>Click "Start" when ready.</p></div>`], show_clickable_nav: true, button_label_next: 'Start'});
+testSections.coda_main.forEach(stim => timeline.push(createPerceptionTrial(stim, trialNum++, totalTrials, 'Coda_Main', false)));
+
+// Combined Test - 40题
+timeline.push({type: 'instructions', pages: [`<h1>Part 5: Combined Test (40 trials)</h1><div class="instruction-text"><p>Identify BOTH tone and coda together.</p><p>Options: <strong>Low-ak, Low-ap, Low-at, High-ak, High-ap, High-at</strong></p><p><strong>Important: Each audio can only be played ONCE!</strong></p><p>Click "Start" when ready.</p></div>`], show_clickable_nav: true, button_label_next: 'Start'});
+testSections.combined_main.forEach(stim => timeline.push(createPerceptionTrial(stim, trialNum++, totalTrials, 'Combined_Main', false)));
+
+timeline.push({type: 'instructions', pages: [`<h1>Test Complete!</h1><div class="instruction-text"><p>Thank you!</p><p>Click "Finish" to save your data.</p></div>`], show_clickable_nav: true, button_label_next: 'Finish'});
+
+jsPsych.init({
+    timeline: timeline,
+    show_progress_bar: true,
+    on_finish: function() {
+        var allData = jsPsych.data.get().values();
+        var perceptionData = allData.filter(t => 
+            t.trial_type === 'html-button-response' && 
+            t.is_practice === false &&
+            !t.is_feedback &&
+            !t.is_survey &&
+            t.question_number !== null &&
+            t.question_number !== undefined &&
+            !isNaN(t.question_number)
+        );
+        
+        var csvContent = "Question_Number,Response\n";
+        
+        csvContent += `Q1_Age,${window.surveyData.Q1_Age}\n`;
+        csvContent += `Q2_Gender,${window.surveyData.Q2_Gender}\n`;
+        csvContent += `Q3_Country,${window.surveyData.Q3_Country}\n`;
+        csvContent += `Q3_Region,${window.surveyData.Q3_Region}\n`;
+        csvContent += `Q4_L1,${window.surveyData.Q4_L1}\n`;
+        csvContent += `Q5_Num_Languages,${window.surveyData.Q5_Num_Languages}\n`;
+        csvContent += `Q5_Languages,"${window.surveyData.Q5_Languages}"\n`;
+        csvContent += `Q6_Music_Years,${window.surveyData.Q6_Music_Years}\n`;
+        csvContent += `Q7_Absolute_Pitch,${window.surveyData.Q7_Absolute_Pitch}\n`;
+        csvContent += `Q8_Pronunciation_Training,${window.surveyData.Q8_Pronunciation_Training}\n`;
+        
+        perceptionData.forEach(trial => {
+            csvContent += `${parseInt(trial.question_number) + 8},${trial.response}\n`;
+        });
+        
+        downloadCSV(csvContent, 'kpth_perception_' + getTimestamp() + '.csv');
+        
+        fetch(GOOGLE_SHEETS_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: csvContent }).then(() => console.log('Uploaded')).catch(e => console.log('Upload error:', e));
+        
+        document.querySelector('#jspsych-content').innerHTML = '<h1>Data saved! Thank you!</h1><p>You may close this page.</p>';
+    }
+});
+
+</script>
+</html>
