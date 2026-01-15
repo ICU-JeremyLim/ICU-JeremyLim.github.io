@@ -108,11 +108,11 @@ const testSections = {
     ],
     
     tone_main: [
-        {audio: 'V05-UTC002-P-NAN004.wav', type: 'tone'},
-        {audio: 'V17-UTC006-P-NAN003.wav', type: 'tone'},
+        {audio: 'V23-UTC008-P-NAN002.wav', type: 'tone'},
+	    {audio: 'V05-UTC002-P-NAN001.wav', type: 'tone'},
         {audio: 'V14-UTC005-P-NAN002.wav', type: 'tone'},
         {audio: 'V11-UTC004-P-NAN002.wav', type: 'tone'},
-        {audio: 'V05-UTC002-P-NAN001.wav', type: 'tone'},
+	    {audio: 'V17-UTC006-P-NAN003.wav', type: 'tone'},
         {audio: 'V14-UTC005-P-NAN001.wav', type: 'tone'},
         {audio: 'V20-UTC007-P-NAN003.wav', type: 'tone'},
         {audio: 'V11-UTC004-P-NAN003.wav', type: 'tone'},
@@ -122,7 +122,7 @@ const testSections = {
         {audio: 'V20-UTC007-P-NAN002.wav', type: 'tone'},
         {audio: 'V08-UTC003-P-NAN002.wav', type: 'tone'},
         {audio: 'V02-UTC001-P-NAN002.wav', type: 'tone'},
-        {audio: 'V23-UTC008-P-NAN002.wav', type: 'tone'},
+	    {audio: 'V05-UTC002-P-NAN004.wav', type: 'tone'},
         {audio: 'V23-UTC008-P-NAN003.wav', type: 'tone'}
     ],
     
@@ -143,7 +143,7 @@ const testSections = {
         {audio: 'V03-UTC001-P-NAN002.wav', type: 'coda'},
         {audio: 'V15-UTC005-P-NAN004.wav', type: 'coda'},
         {audio: 'V20-UTC007-P-NAN004.wav', type: 'coda'},
-        {audio: 'V03-UTC001-P-NAN001.wav', type: 'coda'},
+        {audio: 'V03-UTC001-P-NAN003.wav', type: 'coda'},
         {audio: 'V08-UTC003-P-NAN004.wav', type: 'coda'},
         {audio: 'V09-UTC003-P-NAN002.wav', type: 'coda'},
         {audio: 'V24-UTC008-P-NAN002.wav', type: 'coda'},
@@ -158,9 +158,9 @@ const testSections = {
     
     coda_main_a: [
         {audio: 'V04-UTC002-A-NAN004.wav', type: 'coda_a', choices: ['lak', 'lat', 'lap', 'lah']},
-        {audio: 'V01-UTC001-A-NAN001.wav', type: 'coda_a', choices: ['pak', 'pat', 'pap', 'pah']},
+        {audio: 'V01-UTC001-A-NAN004.wav', type: 'coda_a', choices: ['pak', 'pat', 'pap', 'pah']},
         {audio: 'V16-UTC006-A-NAN001.wav', type: 'coda_a', choices: ['tak', 'tat', 'tap', 'tah']},
-        {audio: 'V07-UTC003-A-NAN002.wav', type: 'coda_a', choices: ['tak', 'tat', 'tap', 'tah']},
+        {audio: 'V07-UTC003-A-NAN001.wav', type: 'coda_a', choices: ['tak', 'tat', 'tap', 'tah']},
         {audio: 'V10-UTC004-A-NAN004.wav', type: 'coda_a', choices: ['tsak', 'tsat', 'tsap', 'tsah']},
         {audio: 'V19-UTC007-A-NAN003.wav', type: 'coda_a', choices: ['bak', 'bat', 'bap', 'bah']},
         {audio: 'V22-UTC008-A-NAN002.wav', type: 'coda_a', choices: ['lak', 'lat', 'lap', 'lah']},
@@ -441,7 +441,7 @@ var timeline = [];
 timeline.push({
     type: 'instructions',
     pages: [
-        `<h1>Welcome to the Perception Test<br>歡迎參加知覺測試<br>知覚テストへようこそ</h1>
+        `<h1>Welcome to the Hokkien Speech Perception Test<br>歡迎參加閩南語語音聽覺測試<br>閩南語音声知覚テストへようこそ</h1>
         <div class="instruction-text">
             <div class="lang-section">
                 <h3>English</h3>
