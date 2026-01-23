@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Kpth Tone Perception Test / 音調知覺測試 / 音調知覚テスト</title>
+    <title>Kpth Tone Perception Test / 音調知覺測試 / 音調知覚テスト / 성조 지각 테스트</title>
     
     <script src="jspsych/jspsych.js"></script>
     <script src="jspsych/jspsych-instructions.js"></script>
@@ -174,7 +174,7 @@ const countries = [
     "Hong Kong SAR / 香港特别行政区 / 香港特別行政区", 
     "Macau SAR / 澳门特别行政区 / マカオ特別行政区", 
     "Taiwan / 台湾地区 / 台湾地域", 
-    "Japan / 日本 / 日本", "South Korea / 韓國 / 韓国", 
+    "Japan / 日本 / 日本", "South Korea / 韓國 / 韓国 / 대한민국", 
     "United States / 美國 / アメリカ", "United Kingdom / 英國 / イギリス", 
     "Canada / 加拿大 / カナダ", "Australia / 澳洲 / オーストラリア", 
     "Germany / 德國 / ドイツ", "France / 法國 / フランス", 
@@ -206,7 +206,7 @@ const regionsByCountry = {
     "Macau SAR / 澳门特别行政区 / マカオ特別行政区": ["Macau Peninsula / 澳門半島 / マカオ半島", "Taipa / 氹仔 / タイパ", "Coloane / 路環 / コロアン"],
     "Taiwan / 台湾地区 / 台湾地域": ["Taipei / 台北 / 台北", "New Taipei / 新北 / 新北", "Taoyuan / 桃園 / 桃園", "Taichung / 台中 / 台中", "Tainan / 台南 / 台南", "Kaohsiung / 高雄 / 高雄", "Keelung / 基隆 / 基隆", "Hsinchu / 新竹 / 新竹", "Chiayi / 嘉義 / 嘉義", "Changhua / 彰化 / 彰化", "Nantou / 南投 / 南投", "Yunlin / 雲林 / 雲林", "Pingtung / 屏東 / 屏東", "Yilan / 宜蘭 / 宜蘭", "Hualien / 花蓮 / 花蓮", "Taitung / 台東 / 台東", "Penghu / 澎湖 / 澎湖", "Kinmen / 金門 / 金門", "Lienchiang / 連江 / 連江", "Other / 其他 / その他"],
     "Japan / 日本 / 日本": ["Hokkaido / 北海道 / 北海道", "Aomori / 青森 / 青森県", "Iwate / 岩手 / 岩手県", "Miyagi / 宮城 / 宮城県", "Akita / 秋田 / 秋田県", "Yamagata / 山形 / 山形県", "Fukushima / 福島 / 福島県", "Ibaraki / 茨城 / 茨城県", "Tochigi / 栃木 / 栃木県", "Gunma / 群馬 / 群馬県", "Saitama / 埼玉 / 埼玉県", "Chiba / 千葉 / 千葉県", "Tokyo / 東京 / 東京都", "Kanagawa / 神奈川 / 神奈川県", "Niigata / 新潟 / 新潟県", "Toyama / 富山 / 富山県", "Ishikawa / 石川 / 石川県", "Fukui / 福井 / 福井県", "Yamanashi / 山梨 / 山梨県", "Nagano / 長野 / 長野県", "Gifu / 岐阜 / 岐阜県", "Shizuoka / 静岡 / 静岡県", "Aichi / 愛知 / 愛知県", "Mie / 三重 / 三重県", "Shiga / 滋賀 / 滋賀県", "Kyoto / 京都 / 京都府", "Osaka / 大阪 / 大阪府", "Hyogo / 兵庫 / 兵庫県", "Nara / 奈良 / 奈良県", "Wakayama / 和歌山 / 和歌山県", "Tottori / 鳥取 / 鳥取県", "Shimane / 島根 / 島根県", "Okayama / 岡山 / 岡山県", "Hiroshima / 広島 / 広島県", "Yamaguchi / 山口 / 山口県", "Tokushima / 徳島 / 徳島県", "Kagawa / 香川 / 香川県", "Ehime / 愛媛 / 愛媛県", "Kochi / 高知 / 高知県", "Fukuoka / 福岡 / 福岡県", "Saga / 佐賀 / 佐賀県", "Nagasaki / 長崎 / 長崎県", "Kumamoto / 熊本 / 熊本県", "Oita / 大分 / 大分県", "Miyazaki / 宮崎 / 宮崎県", "Kagoshima / 鹿児島 / 鹿児島県", "Okinawa / 沖縄 / 沖縄県"],
-    "South Korea / 韓國 / 韓国": ["Seoul / 首爾 / ソウル / 서울", "Busan / 釜山 / 釜山 / 부산", "Incheon / 仁川 / 仁川 / 인천", "Daegu / 大邱 / 大邱 / 대구", "Daejeon / 大田 / 大田 / 대전", "Gwangju / 光州 / 光州 / 광주", "Ulsan / 蔚山 / 蔚山 / 울산", "Sejong / 世宗 / 世宗 / 세종", "Gyeonggi-do / 京畿道 / 京畿道 / 경기도", "Gangwon-do / 江原道 / 江原道 / 강원도", "Chungcheongbuk-do / 忠清北道 / 忠清北道 / 충청북도", "Chungcheongnam-do / 忠清南道 / 忠清南道 / 충청남도", "Jeollabuk-do / 全羅北道 / 全羅北道 / 전라북도", "Jeollanam-do / 全羅南道 / 全羅南道 / 전라남도", "Gyeongsangbuk-do / 慶尚北道 / 慶尚北道 / 경상북도", "Gyeongsangnam-do / 慶尚南道 / 慶尚南道 / 경상남도", "Jeju / 濟州 / 済州 / 제주", "Other / 其他 / その他"],
+    "South Korea / 韓國 / 韓国 / 대한민국": ["Seoul / 首爾 / ソウル / 서울", "Busan / 釜山 / 釜山 / 부산", "Incheon / 仁川 / 仁川 / 인천", "Daegu / 大邱 / 大邱 / 대구", "Daejeon / 大田 / 大田 / 대전", "Gwangju / 光州 / 光州 / 광주", "Ulsan / 蔚山 / 蔚山 / 울산", "Sejong / 世宗 / 世宗 / 세종", "Gyeonggi-do / 京畿道 / 京畿道 / 경기도", "Gangwon-do / 江原道 / 江原道 / 강원도", "Chungcheongbuk-do / 忠清北道 / 忠清北道 / 충청북도", "Chungcheongnam-do / 忠清南道 / 忠清南道 / 충청남도", "Jeollabuk-do / 全羅北道 / 全羅北道 / 전라북도", "Jeollanam-do / 全羅南道 / 全羅南道 / 전라남도", "Gyeongsangbuk-do / 慶尚北道 / 慶尚北道 / 경상북도", "Gyeongsangnam-do / 慶尚南道 / 慶尚南道 / 경상남도", "Jeju / 濟州 / 済州 / 제주", "Other / 其他 / その他 / 기타"],
     "United States / 美國 / アメリカ": ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming", "Other"],
     "United Kingdom / 英國 / イギリス": ["England / 英格蘭 / イングランド", "Scotland / 蘇格蘭 / スコットランド", "Wales / 威爾斯 / ウェールズ", "Northern Ireland / 北愛爾蘭 / 北アイルランド", "Other / 其他 / その他"],
     "Canada / 加拿大 / カナダ": ["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Northwest Territories", "Nova Scotia", "Nunavut", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon", "Other"],
@@ -238,7 +238,7 @@ function downloadCSV(csv, filename) {
 function updateRegions() {
     const country = document.getElementById('q3_country').value;
     const regionSelect = document.getElementById('q3_region');
-    regionSelect.innerHTML = '<option value="">-- Select Region / 選擇地區 / 地域を選択 --</option>';
+    regionSelect.innerHTML = '<option value="">-- Select Region / 選擇地區 / 地域を選択 / 지역 선택 --</option>';
     const regions = regionsByCountry[country] || ['Other / 其他 / その他'];
     regions.forEach(r => {
         const opt = document.createElement('option');
@@ -331,15 +331,15 @@ function createPerceptionTrial(stimulus, trialNum, totalTrials, sectionName, isP
     if (stimulus.type === 'tone') {
         choices = ['Low', 'High'];
         choiceLabels = ['A. Low', 'B. High'];
-        prompt = '<p><strong>Is this Low or High tone? / 這是低音還是高音？ / これは低い音ですか、高い音ですか？</strong></p>';
+        prompt = '<p><strong>Is this Low or High tone? / 這是低音還是高音？ / これは低い音ですか、高い音ですか？ / 이것은 저음입니까, 고음입니까?</strong></p>';
     } else if (stimulus.type === 'coda_a') {
         choices = stimulus.choices;
         choiceLabels = choices.map((c, i) => String.fromCharCode(65 + i) + '. ' + c);
-        prompt = '<p><strong>Which syllable do you hear? / 你聽到哪個音節？ / どの音節が聞こえますか？</strong></p>';
+        prompt = '<p><strong>Which syllable do you hear? / 你聽到哪個音節？ / どの音節が聞こえますか？ / 어떤 음절이 들립니까?</strong></p>';
     } else {
         choices = ['ak', 'ap', 'at', 'ah'];
         choiceLabels = ['A. ak', 'B. ap', 'C. at', 'D. ah'];
-        prompt = '<p><strong>Which coda do you hear? / 你聽到哪個尾音？ / どの末子音が聞こえますか？</strong></p>';
+        prompt = '<p><strong>Which coda do you hear? / 你聽到哪個尾音？ / どの末子音が聞こえますか？ / 어떤 말음이 들립니까?</strong></p>';
     }
     
     const trialId = 'trial_' + Math.random().toString(36).substr(2, 9);
@@ -351,7 +351,7 @@ function createPerceptionTrial(stimulus, trialNum, totalTrials, sectionName, isP
             let header = '';
             if (!isPractice) {
                 const percentage = Math.round((trialNum / totalTrials) * 100);
-                header = `<div class="trial-header"><div class="trial-number">Question ${trialNum} of ${totalTrials} / 問題 ${trialNum}/${totalTrials} / 問題 ${trialNum}/${totalTrials}</div><div class="progress-text">Progress / 進度 / 進捗: ${percentage}%</div></div>`;
+                header = `<div class="trial-header"><div class="trial-number">Question ${trialNum} of ${totalTrials} / 問題 ${trialNum}/${totalTrials} / 問題 ${trialNum}/${totalTrials} / 질문 ${trialNum}/${totalTrials}</div><div class="progress-text">Progress / 進度 / 進捗 / 진행: ${percentage}%</div></div>`;
             }
             
             const maxPlays = isPractice ? 999 : 2;
@@ -381,7 +381,7 @@ function createPerceptionTrial(stimulus, trialNum, totalTrials, sectionName, isP
                                     if (!${isPractice}) {
                                         played++;
                                         btn.setAttribute('data-played', played);
-                                        count.textContent = 'Played / 已播放 / 再生済: ' + played + '/2';
+                                        count.textContent = 'Played / 已播放 / 再生済 / 재생됨: ' + played + '/2';
                                         
                                         if (played >= 2) {
                                             btn.disabled = true;
@@ -390,7 +390,7 @@ function createPerceptionTrial(stimulus, trialNum, totalTrials, sectionName, isP
                                 }).catch((error) => {
                                     console.error('Playback error:', error);
                                     if (errorMsg) {
-                                        errorMsg.textContent = 'Audio playback error. Please refresh the page. / 音頻播放錯誤，請刷新頁面。 / 音声再生エラー。ページを更新してください。';
+                                        errorMsg.textContent = 'Audio playback error. Please refresh the page. / 音頻播放錯誤，請刷新頁面。 / 音声再生エラー。ページを更新してください。 / 오디오 재생 오류. 페이지를 새로고침하세요.';
                                         errorMsg.style.display = 'block';
                                     }
                                 });
@@ -399,7 +399,7 @@ function createPerceptionTrial(stimulus, trialNum, totalTrials, sectionName, isP
                     ">
                         <span class="play-icon">▶</span>
                     </button>
-                    <p id="count_${trialId}">Played / 已播放 / 再生済: 0/${maxPlays}</p>
+                    <p id="count_${trialId}">Played / 已播放 / 再生済 / 재생됨: 0/${maxPlays}</p>
                     <div id="error_${trialId}" class="error-message" style="display:none;"></div>
                 </div>
             `;
@@ -426,10 +426,10 @@ function createPerceptionTrial(stimulus, trialNum, totalTrials, sectionName, isP
                 const lastTrial = jsPsych.data.get().last(1).values()[0];
                 const correct = lastTrial.response === stimulus.answer;
                 return correct ? 
-                    `<div class="feedback-correct">✓ Correct! / 正確！ / 正解！</div><div class="feedback-answer">You selected / 您選擇了 / 選択: ${lastTrial.response}</div><p>Click "Continue" / 點擊「繼續」 / 「続ける」をクリック</p>` : 
-                    `<div class="feedback-incorrect">✗ Incorrect / 不正確 / 不正解</div><div class="feedback-answer">You selected / 您選擇了 / 選択: ${lastTrial.response}</div><div class="feedback-answer">Correct answer / 正確答案 / 正解: ${stimulus.answer}</div><p>Click "Continue" / 點擊「繼續」 / 「続ける」をクリック</p>`;
+                    `<div class="feedback-correct">✓ Correct! / 正確！ / 正解！ / 정답!</div><div class="feedback-answer">You selected / 您選擇了 / 選択 / 선택: ${lastTrial.response}</div><p>Click "Continue" / 點擊「繼續」 / 「続ける」をクリック / 「계속」 클릭</p>` : 
+                    `<div class="feedback-incorrect">✗ Incorrect / 不正確 / 不正解 / 오답</div><div class="feedback-answer">You selected / 您選擇了 / 選択 / 선택: ${lastTrial.response}</div><div class="feedback-answer">Correct answer / 正確答案 / 正解 / 정답: ${stimulus.answer}</div><p>Click "Continue" / 點擊「繼續」 / 「続ける」をクリック / 「계속」 클릭</p>`;
             },
-            choices: ['Continue / 繼續 / 続ける'],
+            choices: ['Continue / 繼續 / 続ける / 계속'],
             data: { is_feedback: true }
         }];
     }
@@ -441,7 +441,7 @@ var timeline = [];
 timeline.push({
     type: 'instructions',
     pages: [
-        `<h1>Welcome to the Hokkien Speech Perception Test<br>歡迎參加閩南語語音聽覺測試<br>閩南語音声知覚テストへようこそ</h1>
+        `<h1>Welcome to the Hokkien Speech Perception Test<br>歡迎參加閩南語語音聽覺測試<br>閩南語音声知覚テストへようこそ<br>민난어 음성 지각 테스트에 오신 것을 환영합니다</h1>
         <div class="instruction-text">
             <div class="lang-section">
                 <h3>English</h3>
@@ -509,27 +509,49 @@ timeline.push({
                 </div>
             </div>
             
+            <div class="lang-section">
+                <h3>한국어</h3>
+                <p>참여해 주셔서 감사합니다!</p>
+                <p>이 테스트는 약 <strong>8-10분</strong>이 소요됩니다.</p>
+                
+                <div class="requirement-box">
+                    <strong>환경 요구사항:</strong><br>
+                    ✓ <strong>알려진 청력 문제 없음</strong><br>
+                    ✓ <strong>헤드폰</strong> 착용<br>
+                    ✓ <strong>컴퓨터 또는 태블릿</strong> 사용<br>
+                    ✓ <strong>조용한 환경</strong>에 있을 것
+                </div>
+                
+                <div class="consent-box">
+                    <strong>동의 및 개인정보:</strong><br>
+                    • 이 실험은 <strong>자발적이며 익명</strong>입니다<br>
+                    • 귀하의 응답은 비밀로 유지됩니다<br>
+                    • <strong>언제든지 중단</strong>할 수 있습니다<br>
+                    • 개인 식별 정보는 수집되지 않습니다
+                </div>
+            </div>
+            
             <p style="text-align:center; margin-top:30px;">
-                <strong>Click "Next" to continue / 點擊「下一步」繼續 / 「次へ」をクリックして続行</strong>
+                <strong>Click "Next" to continue / 點擊「下一步」繼續 / 「次へ」をクリックして続行 / 「다음」을 클릭하여 계속</strong>
             </p>
         </div>`
     ],
     show_clickable_nav: true,
-    button_label_next: 'Next / 下一步 / 次へ'
+    button_label_next: 'Next / 下一步 / 次へ / 다음'
 });
 
 timeline.push({
     type: 'html-button-response',
     stimulus: function() {
         let html = '<div class="survey-form">';
-        html += '<h1>Background Survey / 背景調查 / 背景調査</h1>';
-        html += '<p style="margin-bottom:30px;">Please answer all questions / 請回答所有問題 / すべての質問に答えてください (<span style="color:red;">*</span>)</p>';
+        html += '<h1>Background Survey / 背景調查 / 背景調査 / 배경 설문</h1>';
+        html += '<p style="margin-bottom:30px;">Please answer all questions / 請回答所有問題 / すべての質問に答えてください / 모든 질문에 답해주세요 (<span style="color:red;">*</span>)</p>';
         
         // Q1
         html += '<div class="form-group">';
-        html += '<label for="q1_age">Q1. What is your age? / 您的年齡？ / 年齢は？ <span style="color:red;">*</span></label>';
-        html += '<small>Select a number / 選擇數字 / 番号を選択 (0-100)</small>';
-        html += '<select id="q1_age" onchange="window.surveyData.Q1_Age=this.value;" required><option value="">-- Select Age / 選擇年齡 / 年齢を選択 --</option>';
+        html += '<label for="q1_age">Q1. What is your age? / 您的年齡？ / 年齢は？ / 나이는？ <span style="color:red;">*</span></label>';
+        html += '<small>Select a number / 選擇數字 / 番号を選択 / 숫자 선택 (0-100)</small>';
+        html += '<select id="q1_age" onchange="window.surveyData.Q1_Age=this.value;" required><option value="">-- Select Age / 選擇年齡 / 年齢を選択 / 나이 선택 --</option>';
         for (let i = 0; i <= 100; i++) {
             html += `<option value="${i}">${i}</option>`;
         }
@@ -537,31 +559,31 @@ timeline.push({
         
         // Q2
         html += '<div class="form-group">';
-        html += '<label for="q2_gender">Q2. What is your gender? / 您的性別？ / 性別は？ <span style="color:red;">*</span></label>';
+        html += '<label for="q2_gender">Q2. What is your gender? / 您的性別？ / 性別は？ / 성별은？ <span style="color:red;">*</span></label>';
         html += '<select id="q2_gender" onchange="window.surveyData.Q2_Gender=this.value;" required>';
-        html += '<option value="">-- Select / 選擇 / 選択 --</option>';
-        html += '<option value="Male">Male / 男性 / 男性</option>';
-        html += '<option value="Female">Female / 女性 / 女性</option>';
-        html += '<option value="Prefer not to say">Prefer not to say / 不願透露 / 答えたくない</option>';
+        html += '<option value="">-- Select / 選擇 / 選択 / 선택 --</option>';
+        html += '<option value="Male">Male / 男性 / 男性 / 남성</option>';
+        html += '<option value="Female">Female / 女性 / 女性 / 여성</option>';
+        html += '<option value="Prefer not to say">Prefer not to say / 不願透露 / 答えたくない / 답변하지 않음</option>';
         html += '</select></div>';
         
         // Q3
         html += '<div class="form-group">';
-        html += '<label for="q3_country">Q3. Where do you come from? / 您來自哪裡？ / 出身地は？ <span style="color:red;">*</span></label>';
-        html += '<small>Select a country or area and region / 選擇國家或地區和區域 / 国または地域と地域を選択</small>';
-        html += '<select id="q3_country" onchange="updateRegions()" required><option value="">-- Select Country or Area / 選擇國家或地區 / 国または地域を選択 --</option>';
+        html += '<label for="q3_country">Q3. Where do you come from? / 您來自哪裡？ / 出身地は？ / 출신은 어디인가요？ <span style="color:red;">*</span></label>';
+        html += '<small>Select a country or area and region / 選擇國家或地區和區域 / 国または地域と地域を選択 / 국가 또는 지역 및 지역 선택</small>';
+        html += '<select id="q3_country" onchange="updateRegions()" required><option value="">-- Select Country or Area / 選擇國家或地區 / 国または地域を選択 / 국가 또는 지역 선택 --</option>';
         countries.forEach(c => html += `<option value="${c}">${c}</option>`);
         html += '</select>';
         html += '<select id="q3_region" onchange="window.surveyData.Q3_Region=this.value;" style="margin-top:10px;" required>';
-        html += '<option value="">-- First select a country / 先選擇國家 / まず国を選択 --</option>';
+        html += '<option value="">-- First select a country / 先選擇國家 / まず国を選択 / 먼저 국가를 선택하세요 --</option>';
         html += '</select></div>';
         
         // Q4
         html += '<div class="form-group">';
-        html += '<label for="q4_num">Q4. Which language(s) did you mainly use before age 12?<br>您12歲前主要使用哪種語言？<br>12歳までに主に使用した言語は？ <span style="color:red;">*</span></label>';
-        html += '<small>Select the number of first languages / 選擇第一語言數量 / 第一言語の数を選択</small>';
-        html += '<span class="explanation">Must be fluent, use as mother tongue / 必須流利，作為母語使用 / 流暢で母語として使用</span>';
-        html += '<select id="q4_num" onchange="updateL1Selects()" required><option value="">-- Select Number / 選擇數量 / 数を選択 --</option>';
+        html += '<label for="q4_num">Q4. Which language(s) did you mainly use before age 12?<br>您12歲前主要使用哪種語言？<br>12歳までに主に使用した言語は？<br>12세 이전에 주로 사용한 언어는？ <span style="color:red;">*</span></label>';
+        html += '<small>Select the number of first languages / 選擇第一語言數量 / 第一言語の数を選択 / 제1언어 수 선택</small>';
+        html += '<span class="explanation">Must be fluent, use as mother tongue / 必須流利，作為母語使用 / 流暢で母語として使用 / 유창하게 모국어로 사용</span>';
+        html += '<select id="q4_num" onchange="updateL1Selects()" required><option value="">-- Select Number / 選擇數量 / 数を選択 / 숫자 선택 --</option>';
         for (let i = 1; i <= 10; i++) {
             html += `<option value="${i}">${i}</option>`;
         }
@@ -569,11 +591,11 @@ timeline.push({
         
         // Q5 - UPDATED
         html += '<div class="form-group">';
-        html += '<label for="q5_num">Q5. How many OTHER languages can you speak fluently (besides your first language(s))?<br>除了母語外，您還能流利使用多少種其他語言？<br>母語以外に流暢に話せる言語は何語ですか？ <span style="color:red;">*</span></label>';
-        html += '<small>Select the number (excluding languages from Q4) / 選擇數量（不包括第四題的語言） / 数を選択（Q4の言語を除く）</small>';
+        html += '<label for="q5_num">Q5. How many OTHER languages can you speak fluently (besides your first language(s))?<br>除了母語外，您還能流利使用多少種其他語言？<br>母語以外に流暢に話せる言語は何語ですか？<br>모국어 외에 유창하게 구사할 수 있는 다른 언어는 몇 개입니까？ <span style="color:red;">*</span></label>';
+        html += '<small>Select the number (excluding languages from Q4) / 選擇數量（不包括第四題的語言） / 数を選択（Q4の言語を除く） / 숫자 선택 (Q4의 언어 제외)</small>';
         html += '<select id="q5_num" onchange="updateLanguageSelects()" required>';
-        html += '<option value="">-- Select Number / 選擇數量 / 数を選択 --</option>';
-        html += '<option value="0">0 (None / 無 / なし)</option>';
+        html += '<option value="">-- Select Number / 選擇數量 / 数を選択 / 숫자 선택 --</option>';
+        html += '<option value="0">0 (None / 無 / なし / 없음)</option>';
         for (let i = 1; i <= 10; i++) {
             html += `<option value="${i}">${i}</option>`;
         }
@@ -581,11 +603,11 @@ timeline.push({
         
         // Q6
         html += '<div class="form-group">';
-        html += '<label for="q6_music">Q6. How many years of formal musical training?<br>您有多少年正式音樂訓練？<br>正式な音楽訓練は何年？ <span style="color:red;">*</span></label>';
-        html += '<small>Select a number / 選擇數字 / 番号を選択 (0-50)</small>';
-        html += '<span class="explanation">e.g., learning an instrument or vocal music / 例如：學習樂器或聲樂 / 例：楽器や声楽のレッスン</span>';
+        html += '<label for="q6_music">Q6. How many years of formal musical training?<br>您有多少年正式音樂訓練？<br>正式な音楽訓練は何年？<br>정식 음악 교육을 받은 기간은？ <span style="color:red;">*</span></label>';
+        html += '<small>Select a number / 選擇數字 / 番号を選択 / 숫자 선택 (0-50)</small>';
+        html += '<span class="explanation">e.g., learning an instrument or vocal music / 例如：學習樂器或聲樂 / 例：楽器や声楽のレッスン / 예: 악기나 성악 레슨</span>';
         html += '<select id="q6_music" onchange="window.surveyData.Q6_Music_Years=this.value;" required>';
-        html += '<option value="">-- Select Years / 選擇年數 / 年数を選択 --</option>';
+        html += '<option value="">-- Select Years / 選擇年數 / 年数を選択 / 년수 선택 --</option>';
         for (let i = 0; i <= 50; i++) {
             html += `<option value="${i}">${i}</option>`;
         }
@@ -593,28 +615,28 @@ timeline.push({
         
         // Q7
         html += '<div class="form-group">';
-        html += '<label for="q7_pitch">Q7. Do you have absolute pitch?<br>您有絕對音感嗎？<br>絶対音感はありますか？ <span style="color:red;">*</span></label>';
+        html += '<label for="q7_pitch">Q7. Do you have absolute pitch?<br>您有絕對音感嗎？<br>絶対音感はありますか？<br>절대음감이 있습니까？ <span style="color:red;">*</span></label>';
         html += '<select id="q7_pitch" onchange="window.surveyData.Q7_Absolute_Pitch=this.value;" required>';
-        html += '<option value="">-- Select / 選擇 / 選択 --</option>';
-        html += '<option value="YES">YES / 是 / はい</option>';
-        html += '<option value="NO">NO / 否 / いいえ</option>';
-        html += '<option value="NOT SURE">NOT SURE / 不確定 / わからない</option>';
+        html += '<option value="">-- Select / 選擇 / 選択 / 선택 --</option>';
+        html += '<option value="YES">YES / 是 / はい / 예</option>';
+        html += '<option value="NO">NO / 否 / いいえ / 아니오</option>';
+        html += '<option value="NOT SURE">NOT SURE / 不確定 / わからない / 모르겠음</option>';
         html += '</select></div>';
         
         // Q8
         html += '<div class="form-group">';
-        html += '<label for="q8_training">Q8. Have you received formal pronunciation training?<br>您接受過正式發音訓練嗎？<br>正式な発音訓練を受けましたか？ <span style="color:red;">*</span></label>';
-        html += '<span class="explanation">e.g., English pronunciation course / 例如：英語發音課程 / 例：英語の発音コース</span>';
+        html += '<label for="q8_training">Q8. Have you received formal pronunciation training?<br>您接受過正式發音訓練嗎？<br>正式な発音訓練を受けましたか？<br>정식 발음 교육을 받았습니까？ <span style="color:red;">*</span></label>';
+        html += '<span class="explanation">e.g., English pronunciation course / 例如：英語發音課程 / 例：英語の発音コース / 예: 영어 발음 과정</span>';
         html += '<select id="q8_training" onchange="window.surveyData.Q8_Pronunciation_Training=this.value;" required>';
-        html += '<option value="">-- Select / 選擇 / 選択 --</option>';
-        html += '<option value="YES">YES / 是 / はい</option>';
-        html += '<option value="NO">NO / 否 / いいえ</option>';
+        html += '<option value="">-- Select / 選擇 / 選択 / 선택 --</option>';
+        html += '<option value="YES">YES / 是 / はい / 예</option>';
+        html += '<option value="NO">NO / 否 / いいえ / 아니오</option>';
         html += '</select></div>';
         
         html += '</div>';
         return html;
     },
-    choices: ['Start Test / 開始測試 / テスト開始'],
+    choices: ['Start Test / 開始測試 / テスト開始 / 테스트 시작'],
     data: { is_survey: true },
     on_load: function() {
         const btn = document.querySelector('.jspsych-btn');
@@ -635,9 +657,9 @@ let totalTrials = 16 + 16 + 8;
 
 timeline.push({
     type: 'instructions',
-    pages: [`<h1>Part 1: Tone Practice / 第一部分：音調練習 / パート1：音調練習</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>Practice identifying <strong>Low</strong> vs <strong>High</strong> tones.</p><p>After each answer, you'll see if you were correct.</p><p>You can replay audio as many times as you want.</p></div><div class="lang-section"><h3>中文</h3><p>練習識別<strong>低音</strong>與<strong>高音</strong>。</p><p>每次回答後，您會看到答案是否正確。</p><p>您可以無限次重播音頻。</p></div><div class="lang-section"><h3>日本語</h3><p><strong>低音</strong>と<strong>高音</strong>を識別する練習です。</p><p>各回答の後、正解かどうかがわかります。</p><p>音声は何度でも再生できます。</p></div><p style="text-align:center; margin-top:20px;"><strong>Click "Start" / 點擊「開始」 / 「開始」をクリック</strong></p></div>`],
+    pages: [`<h1>Part 1: Tone Practice / 第一部分：音調練習 / パート1：音調練習 / 파트 1: 성조 연습</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>Practice identifying <strong>Low</strong> vs <strong>High</strong> tones.</p><p>After each answer, you'll see if you were correct.</p><p>You can replay audio as many times as you want.</p></div><div class="lang-section"><h3>中文</h3><p>練習識別<strong>低音</strong>與<strong>高音</strong>。</p><p>每次回答後，您會看到答案是否正確。</p><p>您可以無限次重播音頻。</p></div><div class="lang-section"><h3>日本語</h3><p><strong>低音</strong>と<strong>高音</strong>を識別する練習です。</p><p>各回答の後、正解かどうかがわかります。</p><p>音声は何度でも再生できます。</p></div><div class="lang-section"><h3>한국어</h3><p><strong>저음</strong>과 <strong>고음</strong>을 식별하는 연습입니다.</p><p>각 답변 후 정답 여부를 확인할 수 있습니다.</p><p>오디오는 원하는 만큼 재생할 수 있습니다.</p></div><p style="text-align:center; margin-top:20px;"><strong>Click "Start" / 點擊「開始」 / 「開始」をクリック / 「시작」 클릭</strong></p></div>`],
     show_clickable_nav: true,
-    button_label_next: 'Start / 開始 / 開始'
+    button_label_next: 'Start / 開始 / 開始 / 시작'
 });
 
 testSections.tone_practice.forEach(stim => { 
@@ -648,18 +670,18 @@ testSections.tone_practice.forEach(stim => {
 
 timeline.push({
     type: 'instructions',
-    pages: [`<h1>Part 2: Tone Test / 第二部分：音調測試 / パート2：音調テスト</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>Continue identifying Low vs High tones.</p><p>You will NOT see correct answers.</p><p><strong>Important: Each audio can only be played TWICE!</strong></p></div><div class="lang-section"><h3>中文</h3><p>繼續識別低音與高音。</p><p>您將不會看到正確答案。</p><p><strong>重要：每個音頻只能播放兩次！</strong></p></div><div class="lang-section"><h3>日本語</h3><p>低音と高音の識別を続けます。</p><p>正解は表示されません。</p><p><strong>重要：各音声は2回のみ再生できます！</strong></p></div><p style="text-align:center; margin-top:20px;"><strong>Click "Start" / 點擊「開始」 / 「開始」をクリック</strong></p></div>`],
+    pages: [`<h1>Part 2: Tone Test / 第二部分：音調測試 / パート2：音調テスト / 파트 2: 성조 테스트</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>Continue identifying Low vs High tones.</p><p>You will NOT see correct answers.</p><p><strong>Important: Each audio can only be played TWICE!</strong></p></div><div class="lang-section"><h3>中文</h3><p>繼續識別低音與高音。</p><p>您將不會看到正確答案。</p><p><strong>重要：每個音頻只能播放兩次！</strong></p></div><div class="lang-section"><h3>日本語</h3><p>低音と高音の識別を続けます。</p><p>正解は表示されません。</p><p><strong>重要：各音声は2回のみ再生できます！</strong></p></div><div class="lang-section"><h3>한국어</h3><p>저음과 고음 식별을 계속합니다.</p><p>정답이 표시되지 않습니다.</p><p><strong>중요: 각 오디오는 2번만 재생할 수 있습니다!</strong></p></div><p style="text-align:center; margin-top:20px;"><strong>Click "Start" / 點擊「開始」 / 「開始」をクリック / 「시작」 클릭</strong></p></div>`],
     show_clickable_nav: true,
-    button_label_next: 'Start / 開始 / 開始'
+    button_label_next: 'Start / 開始 / 開始 / 시작'
 });
 
 testSections.tone_main.forEach(stim => timeline.push(createPerceptionTrial(stim, trialNum++, totalTrials, 'Tone_Main', false)));
 
 timeline.push({
     type: 'instructions',
-    pages: [`<h1>Part 3: Coda Practice / 第三部分：尾音練習 / パート3：末子音練習</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>Practice identifying word-final consonants (codas).</p><p>Listen for: <strong>ak, ap, at, or ah</strong></p><p>You can replay audio as many times as you want.</p></div><div class="lang-section"><h3>中文</h3><p>練習識別詞尾輔音（尾音）。</p><p>聽辨：<strong>ak、ap、at 或 ah</strong></p><p>您可以無限次重播音頻。</p></div><div class="lang-section"><h3>日本語</h3><p>語末子音（末子音）を識別する練習です。</p><p>聞き取る音：<strong>ak、ap、at、またはah</strong></p><p>音声は何度でも再生できます。</p></div><p style="text-align:center; margin-top:20px;"><strong>Click "Start" / 點擊「開始」 / 「開始」をクリック</strong></p></div>`],
+    pages: [`<h1>Part 3: Coda Practice / 第三部分：尾音練習 / パート3：末子音練習 / 파트 3: 말음 연습</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>Practice identifying word-final consonants (codas).</p><p>Listen for: <strong>ak, ap, at, or ah</strong></p><p>You can replay audio as many times as you want.</p></div><div class="lang-section"><h3>中文</h3><p>練習識別詞尾輔音（尾音）。</p><p>聽辨：<strong>ak、ap、at 或 ah</strong></p><p>您可以無限次重播音頻。</p></div><div class="lang-section"><h3>日本語</h3><p>語末子音（末子音）を識別する練習です。</p><p>聞き取る音：<strong>ak、ap、at、またはah</strong></p><p>音声は何度でも再生できます。</p></div><div class="lang-section"><h3>한국어</h3><p>어말 자음(말음)을 식별하는 연습입니다.</p><p>듣기: <strong>ak, ap, at, 또는 ah</strong></p><p>오디오는 원하는 만큼 재생할 수 있습니다.</p></div><p style="text-align:center; margin-top:20px;"><strong>Click "Start" / 點擊「開始」 / 「開始」をクリック / 「시작」 클릭</strong></p></div>`],
     show_clickable_nav: true,
-    button_label_next: 'Start / 開始 / 開始'
+    button_label_next: 'Start / 開始 / 開始 / 시작'
 });
 
 testSections.coda_practice.forEach(stim => { 
@@ -670,27 +692,27 @@ testSections.coda_practice.forEach(stim => {
 
 timeline.push({
     type: 'instructions',
-    pages: [`<h1>Part 4: Coda Test - Part 1 / 第四部分：尾音測試 - 第1部分 / パート4：末子音テスト - パート1</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>Continue identifying codas: <strong>ak, ap, at, or ah</strong></p><p><strong>Important: Each audio can only be played TWICE!</strong></p></div><div class="lang-section"><h3>中文</h3><p>繼續識別尾音：<strong>ak、ap、at 或 ah</strong></p><p><strong>重要：每個音頻只能播放兩次！</strong></p></div><div class="lang-section"><h3>日本語</h3><p>末子音の識別を続けます：<strong>ak、ap、at、またはah</strong></p><p><strong>重要：各音声は2回のみ再生できます！</strong></p></div><p style="text-align:center; margin-top:20px;"><strong>Click "Start" / 點擊「開始」 / 「開始」をクリック</strong></p></div>`],
+    pages: [`<h1>Part 4: Coda Test - Part 1 / 第四部分：尾音測試 - 第1部分 / パート4：末子音テスト - パート1 / 파트 4: 말음 테스트 - 1부</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>Continue identifying codas: <strong>ak, ap, at, or ah</strong></p><p><strong>Important: Each audio can only be played TWICE!</strong></p></div><div class="lang-section"><h3>中文</h3><p>繼續識別尾音：<strong>ak、ap、at 或 ah</strong></p><p><strong>重要：每個音頻只能播放兩次！</strong></p></div><div class="lang-section"><h3>日本語</h3><p>末子音の識別を続けます：<strong>ak、ap、at、またはah</strong></p><p><strong>重要：各音声は2回のみ再生できます！</strong></p></div><div class="lang-section"><h3>한국어</h3><p>말음 식별을 계속합니다: <strong>ak, ap, at, 또는 ah</strong></p><p><strong>중요: 각 오디오는 2번만 재생할 수 있습니다!</strong></p></div><p style="text-align:center; margin-top:20px;"><strong>Click "Start" / 點擊「開始」 / 「開始」をクリック / 「시작」 클릭</strong></p></div>`],
     show_clickable_nav: true,
-    button_label_next: 'Start / 開始 / 開始'
+    button_label_next: 'Start / 開始 / 開始 / 시작'
 });
 
 testSections.coda_main_p.forEach(stim => timeline.push(createPerceptionTrial(stim, trialNum++, totalTrials, 'Coda_Main_P', false)));
 
 timeline.push({
     type: 'instructions',
-    pages: [`<h1>Part 5: Coda Test - Part 2 / 第五部分：尾音測試 - 第2部分 / パート5：末子音テスト - パート2</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>In this section, you'll hear different consonant+coda combinations.</p><p>Listen carefully to the ENTIRE syllable.</p><p><strong>Important: Each audio can only be played TWICE!</strong></p></div><div class="lang-section"><h3>中文</h3><p>在這部分，您將聽到不同的輔音+尾音組合。</p><p>請仔細聽整個音節。</p><p><strong>重要：每個音頻只能播放兩次！</strong></p></div><div class="lang-section"><h3>日本語</h3><p>このセクションでは、さまざまな子音+末子音の組み合わせを聞きます。</p><p>音節全体を注意深く聞いてください。</p><p><strong>重要：各音声は2回のみ再生できます！</strong></p></div><p style="text-align:center; margin-top:20px;"><strong>Click "Start" / 點擊「開始」 / 「開始」をクリック</strong></p></div>`],
+    pages: [`<h1>Part 5: Coda Test - Part 2 / 第五部分：尾音測試 - 第2部分 / パート5：末子音テスト - パート2 / 파트 5: 말음 테스트 - 2부</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>In this section, you'll hear different consonant+coda combinations.</p><p>Listen carefully to the ENTIRE syllable.</p><p><strong>Important: Each audio can only be played TWICE!</strong></p></div><div class="lang-section"><h3>中文</h3><p>在這部分，您將聽到不同的輔音+尾音組合。</p><p>請仔細聽整個音節。</p><p><strong>重要：每個音頻只能播放兩次！</strong></p></div><div class="lang-section"><h3>日本語</h3><p>このセクションでは、さまざまな子音+末子音の組み合わせを聞きます。</p><p>音節全体を注意深く聞いてください。</p><p><strong>重要：各音声は2回のみ再生できます！</strong></p></div><div class="lang-section"><h3>한국어</h3><p>이 섹션에서는 다양한 자음+말음 조합을 듣게 됩니다.</p><p>전체 음절을 주의깊게 들으세요.</p><p><strong>중요: 각 오디오는 2번만 재생할 수 있습니다!</strong></p></div><p style="text-align:center; margin-top:20px;"><strong>Click "Start" / 點擊「開始」 / 「開始」をクリック / 「시작」 클릭</strong></p></div>`],
     show_clickable_nav: true,
-    button_label_next: 'Start / 開始 / 開始'
+    button_label_next: 'Start / 開始 / 開始 / 시작'
 });
 
 testSections.coda_main_a.forEach(stim => timeline.push(createPerceptionTrial(stim, trialNum++, totalTrials, 'Coda_Main_A', false)));
 
 timeline.push({
     type: 'instructions',
-    pages: [`<h1>Test Complete! / 測試完成！ / テスト完了！</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>Thank you for your participation!</p><p>Click "Finish" to save your data.</p><div class="email-reminder"><strong>⚠️ Important:</strong> Please send your test results to:<br><strong style="font-size:18px;">c281769x@icu.ac.jp</strong></div></div><div class="lang-section"><h3>中文</h3><p>感謝您的參與！</p><p>點擊「完成」以儲存您的資料。</p><div class="email-reminder"><strong>⚠️ 重要提示：</strong>請將測試結果發送至：<br><strong style="font-size:18px;">c281769x@icu.ac.jp</strong></div></div><div class="lang-section"><h3>日本語</h3><p>ご参加ありがとうございました！</p><p>「完了」をクリックしてデータを保存してください。</p><div class="email-reminder"><strong>⚠️ 重要：</strong>テスト結果を以下に送信してください：<br><strong style="font-size:18px;">c281769x@icu.ac.jp</strong></div></div></div>`],
+    pages: [`<h1>Test Complete! / 測試完成！ / テスト完了！ / 테스트 완료!</h1><div class="instruction-text"><div class="lang-section"><h3>English</h3><p>Thank you for your participation!</p><p>Click "Finish" to save your data.</p><div class="email-reminder"><strong>⚠️ Important:</strong> Please send your test results to:<br><strong style="font-size:18px;">c281769x@icu.ac.jp</strong></div></div><div class="lang-section"><h3>中文</h3><p>感謝您的參與！</p><p>點擊「完成」以儲存您的資料。</p><div class="email-reminder"><strong>⚠️ 重要提示：</strong>請將測試結果發送至：<br><strong style="font-size:18px;">c281769x@icu.ac.jp</strong></div></div><div class="lang-section"><h3>日本語</h3><p>ご参加ありがとうございました！</p><p>「完了」をクリックしてデータを保存してください。</p><div class="email-reminder"><strong>⚠️ 重要：</strong>テスト結果を以下に送信してください：<br><strong style="font-size:18px;">c281769x@icu.ac.jp</strong></div></div><div class="lang-section"><h3>한국어</h3><p>참여해 주셔서 감사합니다!</p><p>「완료」를 클릭하여 데이터를 저장하세요.</p><div class="email-reminder"><strong>⚠️ 중요:</strong> 테스트 결과를 다음으로 보내주세요:<br><strong style="font-size:18px;">c281769x@icu.ac.jp</strong></div></div></div>`],
     show_clickable_nav: true,
-    button_label_next: 'Finish / 完成 / 完了'
+    button_label_next: 'Finish / 完成 / 完了 / 완료'
 });
 
 jsPsych.init({
@@ -730,7 +752,7 @@ jsPsych.init({
         
         fetch(GOOGLE_SHEETS_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: csvContent }).then(() => console.log('Uploaded')).catch(e => console.log('Upload error:', e));
         
-        document.querySelector('#jspsych-content').innerHTML = `<h1>Data saved! / 資料已儲存！ / データ保存完了！</h1><p>Thank you! / 謝謝！ / ありがとうございました！</p><div class="email-reminder" style="max-width:600px; margin:20px auto;"><strong>⚠️ IMPORTANT REMINDER / 重要提示 / 重要なお知らせ:</strong><br><br>Please send your test results file to:<br>請將測試結果文件發送至：<br>テスト結果ファイルを送信してください：<br><br><strong style="font-size:20px; color:#155724;">c281769x@icu.ac.jp</strong></div><p style="margin-top:20px;">You may close this page / 您可以關閉此頁面 / このページを閉じてください</p>`;
+        document.querySelector('#jspsych-content').innerHTML = `<h1>Data saved! / 資料已儲存！ / データ保存完了！ / 데이터 저장 완료!</h1><p>Thank you! / 謝謝！ / ありがとうございました！ / 감사합니다!</p><div class="email-reminder" style="max-width:600px; margin:20px auto;"><strong>⚠️ IMPORTANT REMINDER / 重要提示 / 重要なお知らせ / 중요 알림:</strong><br><br>Please send your test results file to:<br>請將測試結果文件發送至：<br>テスト結果ファイルを送信してください：<br>테스트 결과 파일을 다음으로 보내주세요:<br><br><strong style="font-size:20px; color:#155724;">c281769x@icu.ac.jp</strong></div><p style="margin-top:20px;">You may close this page / 您可以關閉此頁面 / このページを閉じてください / 이 페이지를 닫으셔도 됩니다</p>`;
     }
 });
 
